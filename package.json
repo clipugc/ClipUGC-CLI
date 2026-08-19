@@ -1,0 +1,52 @@
+{
+  "name": "clipugc",
+  "version": "1.0.0",
+  "description": "Official CLI for ClipUGC \u2014 create AI characters, generate looks, and produce UGC-style videos for your mobile app from the terminal.",
+  "type": "module",
+  "bin": {
+    "clipugc": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "tsx scripts/e2e.ts"
+  },
+  "keywords": [
+    "clipugc",
+    "ugc",
+    "ai-video",
+    "cli",
+    "video-generation"
+  ],
+  "homepage": "https://clipugc.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clipugc/ClipUGC-CLI.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "fs-extra": "^11.3.0",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.13.10",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "bugs": {
+    "url": "https://github.com/clipugc/ClipUGC-CLI/issues"
+  }
+}

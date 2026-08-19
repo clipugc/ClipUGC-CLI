@@ -1,0 +1,10 @@
+{
+  "name": "clipugc",
+  "description": "ClipUGC skills for Claude Code \u2014 a UGC ad director (reaction archetypes, hook formulas, casting, prompt library), a persona-account runner for ongoing AI creator accounts (persona definition, content pillars, next-post loop, grid composition), plus the full CLI: create AI characters, generate photorealistic looks, produce silent-reaction video clips, and merge app screen recordings into ready-to-post UGC ads.",
+  "version": "2.0.0",
+  "author": {
+    "name": "ClipUGC",
+    "url": "https://clipugc.com"
+  },
+  "homepage": "https://github.com/clipugc/ClipUGC-CLI"
+}

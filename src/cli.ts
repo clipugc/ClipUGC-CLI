@@ -9,6 +9,7 @@ import { registerImagesCommands } from './commands/images.js';
 import { registerAdsCommands } from './commands/ads.js';
 import { registerVideosCommands } from './commands/videos.js';
 import { registerHooksCommands } from './commands/hooks.js';
+import { registerStoriesCommands } from './commands/stories.js';
 
 export function createCli(): Command {
   const program = new Command();
@@ -33,6 +34,7 @@ export function createCli(): Command {
   registerVideosCommands(program);
   registerAdsCommands(program);
   registerHooksCommands(program);
+  registerStoriesCommands(program);
 
   return program;
 }

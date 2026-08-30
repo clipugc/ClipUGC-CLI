@@ -1,7 +1,7 @@
 {
   "name": "clipugc",
-  "version": "1.0.0",
-  "description": "Official CLI for ClipUGC \u2014 create AI characters, generate looks, and produce UGC-style videos for your mobile app from the terminal.",
+  "version": "1.1.0",
+  "description": "Official CLI for ClipUGC — create AI characters, generate looks, and produce UGC-style videos for your mobile app from the terminal.",
   "type": "module",
   "bin": {
     "clipugc": "./dist/index.js"

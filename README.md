@@ -12,6 +12,7 @@ clipugc auth login
 
 Requires **Node.js >= 20**. Create an API key in the
 [ClipUGC dashboard](https://clipugc.com/dashboard) (API keys section).
+API keys are available on paid plans (Professional and Business).
 
 ## Use it with Claude Code
 

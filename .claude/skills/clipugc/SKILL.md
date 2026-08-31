@@ -192,6 +192,7 @@ Exit codes: 0 ok, 1 generic, 2 validation, 3 auth, 4 not found, 5 premium requir
 | Exit 3 / auth error | The stored key is missing, invalid, or revoked. Tell the user to create a fresh API key in the dashboard and re-run `clipugc auth login`. |
 | Exit 7 / network error | Check `clipugc config get apiBaseUrl` (and the `CLIPUGC_API_BASE_URL` env var) — the API base URL may be wrong or the server unreachable. Retry after verifying connectivity. |
 | Exit 5 / premium required | The action needs a paid plan. Tell the user to upgrade their plan in the ClipUGC dashboard. |
+| "plan" error on `characters create` or `stories` | Plan limits: character creation is capped per month by plan (Professional 3, Business 10), and Stories need the Business plan. Relay the server's message and suggest upgrading — do not retry. |
 | Exit 2 / validation error | An input broke a constraint (scene > 600 chars, prompt > 1500, hook > 150, driver video > 50MB or > 30s, wrong file format, per-page > 50). Fix the input and re-run. |
 | A generation ended `failed` | Retry it: `clipugc images retry <id> --wait` or `clipugc videos retry <id> --wait`. Check details first with `images show <id>` / `videos show <id>`. |
 | Not sure what state a job is in | `clipugc images status <id>` / `clipugc videos status <id>` (no credits consumed). |

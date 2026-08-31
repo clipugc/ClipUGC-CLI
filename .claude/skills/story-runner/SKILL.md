@@ -14,6 +14,10 @@ episode's first scene starts on the previous episode's exact last frame.
 **The flow is always: draft (free) → review the script → approve (charged) → download.**
 Never approve an episode without showing the user the script first.
 
+Stories are part of the Business plan. On other plans the server rejects `stories create`
+and `stories draft` with a clear message — relay it and point the user at the upgrade
+page (https://clipugc.com/#pricing) instead of retrying.
+
 ## Commands
 
 | Intent | Command |

@@ -281,7 +281,7 @@ export function registerVideosCommands(program: Command): void {
   videos
     .command('show <id>')
     .description('Show details of a character video')
-    .action(async (id: string, cmd: Command) => {
+    .action(async (id: string, _opts: Record<string, unknown>, cmd: Command) => {
       const json = isJsonMode(cmd);
       const api = await createApiClient();
       const video = await getVideo(api, id);
@@ -308,7 +308,7 @@ export function registerVideosCommands(program: Command): void {
   videos
     .command('status <id>')
     .description('Check the processing status of a character video')
-    .action(async (id: string, cmd: Command) => {
+    .action(async (id: string, _opts: Record<string, unknown>, cmd: Command) => {
       const json = isJsonMode(cmd);
       const api = await createApiClient();
       const check = await checkVideoStatus(api, id);

@@ -74,7 +74,7 @@ export function registerAdsCommands(program: Command): void {
   ads
     .command('show <adId>')
     .description('Show details of a finished UGC ad')
-    .action(async (adId: string, cmd: Command) => {
+    .action(async (adId: string, _opts: Record<string, unknown>, cmd: Command) => {
       const json = isJsonMode(cmd);
       const api = await createApiClient();
       const ad = await getMergedVideo(api, adId);

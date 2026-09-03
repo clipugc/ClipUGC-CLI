@@ -1,0 +1,6 @@
+# Extra excludes for `mcpb pack` (on top of its built-in list: *.map, .git, lock files, node_modules/.bin, ...).
+# The bundle only needs the compiled JS, package.json (the server reads its version from it),
+# the production node_modules, the manifest and the icon.
+*.d.ts
+*.d.ts.map
+*.tsbuildinfo

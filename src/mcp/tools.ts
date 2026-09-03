@@ -22,7 +22,7 @@ import * as ads from '../services/ads.service.js';
 import * as user from '../services/user.service.js';
 import * as hooks from '../services/hooks.service.js';
 import * as uploads from '../services/upload.service.js';
-import { AuthError, CliError, InsufficientCreditsError } from '../utils/errors.js';
+import { AuthError, CliError, InsufficientCreditsError, PremiumRequiredError } from '../utils/errors.js';
 
 export const TOOL_NAMES = [
   'list_characters',
@@ -461,6 +461,9 @@ export function formatToolError(error: unknown): string {
   }
   if (error instanceof InsufficientCreditsError) {
     return `${error.message} Call get_credits to see the balance; credits can be bought at ${DASHBOARD_URL}.`;
+  }
+  if (error instanceof PremiumRequiredError) {
+    return `${error.message} This needs a paid plan; upgrade at ${DASHBOARD_URL}.`;
   }
   if (error instanceof CliError) {
     return `${error.name}: ${error.message}`;

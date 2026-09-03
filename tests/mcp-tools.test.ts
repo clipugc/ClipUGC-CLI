@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AuthError, InsufficientCreditsError, ValidationError } from '../src/utils/errors.js';
+import { AuthError, InsufficientCreditsError, PremiumRequiredError, ValidationError } from '../src/utils/errors.js';
 
 /**
  * Each MCP tool is an adapter over the service layer, so the services are mocked and every
@@ -273,6 +273,14 @@ describe('create_clip', () => {
     expect(isError).toBe(true);
     expect(text).toContain('get_credits');
     expect(text).toContain('Need 7, have 2');
+  });
+
+  it('surfaces premium-required (1002) with an upgrade hint', async () => {
+    vi.mocked(videos.createImageToVideo).mockRejectedValue(new PremiumRequiredError('Premium subscription required.'));
+    const { isError, text } = await call('create_clip', { image: '87' });
+    expect(isError).toBe(true);
+    expect(text).toContain('Premium subscription required');
+    expect(text).toContain('paid plan');
   });
 });
 

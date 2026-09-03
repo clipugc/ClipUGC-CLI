@@ -18,7 +18,7 @@ Credits are consumed server-side (duration-aware; refunds return the exact amoun
 > `per_page`), and return JSON. Generation tools return the job id immediately; poll `get_video`
 > (clips, and ads with `kind: "ad"`) or `list_images` (looks) until `status` is `completed`, the way
 > `--wait` would. Everything else in this skill (workspace layout, credit gates, id spaces, prompt
-> rules) applies unchanged. To connect it: `claude mcp add clipugc -- npx -y clipugc mcp`. When the
+> rules) applies unchanged. To connect it: `claude mcp add clipugc -- npx -y clipugc@latest mcp`. When the
 > MCP server is not connected, use the CLI commands below.
 
 > **Creative direction lives in the `ugc-director` skill.** If the user asks "make an ad for my app", wants hook ideas, reaction styles, casting advice, or a full concept-to-ad plan, use `ugc-director` (it decides WHAT to generate: archetype, hook text, look scene, clip prompt) and come back here for command syntax. This skill is the command manual.

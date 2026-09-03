@@ -58,15 +58,16 @@ clipugc auth login
 **Claude Code**
 
 ```bash
-claude mcp add clipugc -- npx -y clipugc mcp
+claude mcp add clipugc -- npx -y clipugc@latest mcp
 ```
 
-If Claude Code reports "Connection closed" on the first start, npx was still
-downloading the package when Claude gave up. Run `npx -y clipugc mcp` once in a
-terminal (Ctrl+C after it prints "11 tools ready"), then reconnect. Or install
-it once with `npm i -g clipugc` and register `claude mcp add clipugc -- clipugc mcp`.
-Do not add it from inside a checkout of this repo: there npx resolves `clipugc`
-to the local project instead of the npm package.
+`@latest` matters: without it npx reuses any `clipugc` already installed on
+your machine, and a global install older than 1.2.0 has no `mcp` command, so
+Claude Code reports "Connection closed". If you still see that, update the old
+install with `npm i -g clipugc@latest`, or run `npx -y clipugc@latest mcp` once in
+a terminal so the download finishes (Ctrl+C after "11 tools ready"). Do not add
+it from inside a checkout of this repo: there npx resolves `clipugc` to the
+local project instead of the npm package.
 
 **Cursor** (Settings > MCP, or `.cursor/mcp.json` in your project)
 
@@ -75,7 +76,7 @@ to the local project instead of the npm package.
   "mcpServers": {
     "clipugc": {
       "command": "npx",
-      "args": ["-y", "clipugc", "mcp"]
+      "args": ["-y", "clipugc@latest", "mcp"]
     }
   }
 }

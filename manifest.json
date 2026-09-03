@@ -1,0 +1,97 @@
+{
+  "manifest_version": "0.3",
+  "name": "clipugc",
+  "display_name": "ClipUGC",
+  "version": "1.2.0",
+  "description": "Create AI influencer characters, looks, video clips and merged UGC app ads with ClipUGC.",
+  "long_description": "ClipUGC makes UGC-style ads for mobile apps with AI creators. This extension gives Claude Desktop the same tools as the `clipugc` command line: create an AI character, generate more looks of the same face, animate a look into a short silent-reaction clip, merge your app screen recording under a hook text, and download the finished ad.\n\nYou need a ClipUGC account on a paid plan and an API key from https://clipugc.com/dashboard (API Keys). Generation spends credits from your ClipUGC balance; the `get_credits` tool shows the balance and the live cost of each action.",
+  "author": {
+    "name": "ClipUGC",
+    "email": "clipugc@gmail.com",
+    "url": "https://clipugc.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clipugc/ClipUGC-CLI"
+  },
+  "homepage": "https://clipugc.com/mcp",
+  "documentation": "https://github.com/clipugc/ClipUGC-CLI#readme",
+  "support": "mailto:clipugc@gmail.com",
+  "icon": "icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js", "mcp"],
+      "env": {
+        "CLIPUGC_API_KEY": "${user_config.api_key}"
+      }
+    }
+  },
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "ClipUGC API key",
+      "description": "Create one at https://clipugc.com/dashboard under API Keys",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "tools": [
+    {
+      "name": "list_characters",
+      "description": "List your AI characters, or browse public ones. Costs no credits."
+    },
+    {
+      "name": "create_character",
+      "description": "Create a new AI character from a plain-language description. 2 credits."
+    },
+    {
+      "name": "generate_image",
+      "description": "Generate more looks (photos) of an existing character, same face in a new setting. 2 credits per look."
+    },
+    {
+      "name": "list_images",
+      "description": "List the looks of a character and their generation status. Costs no credits."
+    },
+    {
+      "name": "create_clip",
+      "description": "Animate a look or your own photo into a 5 or 10 second video clip. 7 or 13 credits."
+    },
+    {
+      "name": "create_motion_clip",
+      "description": "Animate a look or photo by copying the motion of a driver video. 3 credits per driver second."
+    },
+    {
+      "name": "merge_ad",
+      "description": "Merge a finished clip with your app screen recording and a hook text into a UGC ad. Free at the moment; get_credits shows the live cost."
+    },
+    {
+      "name": "get_video",
+      "description": "Get the status of a clip or a merged ad. Use it to poll until generation completes. Costs no credits."
+    },
+    {
+      "name": "download_video",
+      "description": "Download a completed clip or ad to a local mp4 file. Costs no credits."
+    },
+    {
+      "name": "get_credits",
+      "description": "Show your credit balance and the live cost of each action. Costs no credits."
+    },
+    {
+      "name": "list_hooks",
+      "description": "Suggest hook texts for an ad based on a short description of your app. Costs no credits."
+    }
+  ],
+  "keywords": ["clipugc", "ugc", "ai-video", "video-generation", "ai-influencer", "mobile-app-ads", "cli"],
+  "license": "MIT",
+  "compatibility": {
+    "claude_desktop": ">=1.0.0",
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=20"
+    }
+  },
+  "privacy_policies": ["https://clipugc.com/privacy-policy"]
+}

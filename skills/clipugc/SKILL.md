@@ -8,7 +8,7 @@ argument-hint: "[command or description]"
 
 You are helping the user run ClipUGC CLI commands. [ClipUGC](https://clipugc.com) makes AI-generated, influencer-style UGC (user-generated-content) marketing videos for mobile apps. The pipeline: create an AI character (structured appearance "DNA") → generate photorealistic looks (reference images) → turn a look into short video clips → merge a clip with the user's app screen recording + a hook text (+ optional music) into a final UGC ad.
 
-Credits are consumed server-side (duration-aware; refunds return the exact amount charged): image = 2, clip (5s) = 7, clip (10s) = 13, motion control = 3 per second of driver video (rounded up, capped at 30s), scene-staged clip (a video created with `--scene`) = 9, merge = 1.
+Credits are consumed server-side (duration-aware; refunds return the exact amount charged): image = 2, clip (5s) = 7, clip (10s) = 13, motion control = 3 per second of driver video (rounded up, capped at 30s), scene-staged clip (a video created with `--scene`) = 9, merge = free (0). Prefer the live values from `clipugc credits`.
 
 > **MCP alternative.** The same binary is an MCP server (`clipugc mcp`). If this session has the
 > `clipugc` MCP server connected (tools named `list_characters`, `create_character`, `generate_image`,
@@ -50,7 +50,7 @@ Match the user's intent (from `$ARGUMENTS` or conversation context) to the right
 | List clips | `clipugc videos list [--character <id>] [--mergeable]` — `--character` filters to one AI character, `--mergeable` = completed clips not yet merged (ready for merge) |
 | Create a video clip from a look or photo | `clipugc videos create (--image <lookId> \| --photo <file>) [--prompt "..."] [--scene "..."] [--duration 5\|10] [--keep-sound] --wait` — with `--scene` the server first stages that look into the new setting (same face), then animates it (scene-staged cost) |
 | Animate a look/photo with a driver video | `clipugc videos motion (--image <lookId> \| --photo <file>) --driver <video.mp4> [--keep-sound] --wait` |
-| Merge clip + app recording into a UGC ad | `clipugc videos merge <videoId> --app-video <screenrec.mp4> --hook "..." [--music <file.mp3>] --wait` — creates an AD with its OWN id (printed; `merged_video_id` under `--json`). `--wait` blocks until the render finishes (or fails, refunding the credit); then `ads download <adId>` gets the final ad |
+| Merge clip + app recording into a UGC ad | `clipugc videos merge <videoId> --app-video <screenrec.mp4> --hook "..." [--music <file.mp3>] --wait` — creates an AD with its OWN id (printed; `merged_video_id` under `--json`). `--wait` blocks until the render finishes (or fails); then `ads download <adId>` gets the final ad |
 | Inspect / download a clip | `clipugc videos show <id>` / `videos status <id>` / `videos download <id> [-o out.mp4]` |
 | Retry / delete a clip | `clipugc videos retry <id> --wait` / `videos delete <id> [--yes]` |
 | List finished ads | `clipugc ads list [--status pending\|processing\|completed\|failed]` (same as `videos list --finals`) |

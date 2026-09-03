@@ -74,9 +74,23 @@ claude mcp add clipugc -- npx -y clipugc mcp
 }
 ```
 
-The same block works in Claude Desktop's `claude_desktop_config.json`. If you would
-rather not run `clipugc auth login` on that machine, add an `env` block with
-`CLIPUGC_API_KEY` set to a key from the dashboard.
+If you would rather not run `clipugc auth login` on that machine, add an `env` block
+with `CLIPUGC_API_KEY` set to a key from the dashboard.
+
+**Claude Desktop**
+
+Claude Desktop installs the server as an extension, so there is no config file to edit
+and no Node install needed beyond the app itself:
+
+1. Download `clipugc.mcpb` from the
+   [latest GitHub release](https://github.com/clipugc/ClipUGC-CLI/releases/latest).
+2. Double-click the file, or open Claude Desktop, go to **Settings > Extensions**,
+   and choose **Install Extension** (Advanced settings on some versions).
+3. Paste your ClipUGC API key when asked. Create one in the
+   [dashboard](https://clipugc.com/dashboard) under API Keys.
+
+The extension runs the same `clipugc mcp` server as above. To build the bundle
+yourself, run `npm run build:mcpb` (see "Local development").
 
 Tools: `list_characters`, `create_character`, `generate_image`, `list_images`,
 `create_clip`, `create_motion_clip`, `merge_ad`, `get_video`, `download_video`,
@@ -277,7 +291,31 @@ npm ci
 npm run build     # compile TypeScript to dist/
 npm test          # run the vitest suite
 npm run dev       # run from source (tsx src/index.ts)
+npm run build:mcpb  # build the Claude Desktop extension: dist-mcpb/clipugc.mcpb
 ```
+
+`manifest.json` and `icon.png` at the repo root describe the Claude Desktop
+extension. The build script stages `dist/`, `package.json` and a production-only
+`node_modules/` in `dist-mcpb/stage/`, validates the manifest and packs the bundle.
+Its version, name and tool list must match `package.json` and the MCP server; the
+tests check that.
+
+## Privacy Policy
+
+This CLI and the Claude Desktop extension do not collect anything themselves.
+There is no analytics, no telemetry and no crash reporting in the code.
+
+What leaves your machine: your prompts and tool arguments, the files you choose
+to upload (photos, app screen recordings, driver videos) and your API key. They are
+sent only to `clipugc.com` over HTTPS, and only to run the request you made. The
+API key is stored in `~/.config/clipugc/config.json` (CLI) or in Claude Desktop's
+extension settings, and is never sent anywhere else.
+
+How the ClipUGC service stores and handles that data, including retention and the
+AI providers it uses to render videos, is described in the ClipUGC privacy policy:
+<https://clipugc.com/privacy-policy>.
+
+Questions or deletion requests: <clipugc@gmail.com>.
 
 ## License
 

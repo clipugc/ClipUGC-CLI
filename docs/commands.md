@@ -142,7 +142,7 @@ Tools exposed, with the CLI command each one mirrors:
 | `get_credits` | `credits` | Balance and live per-action costs. |
 | `list_hooks` | `hooks suggest` | `context`. |
 
-Argument names follow the CLI flags with underscores instead of dashes. Generation tools never block: they return the id, and the client polls `get_video` or `list_images`. See the README section "Use from Claude Code / Cursor" for client setup.
+Argument names follow the CLI flags with underscores instead of dashes. Generation tools never block: they return the id, and the client polls `get_video` or `list_images`. See the README section "Use from Claude Code / Cursor" for client setup. Claude Desktop users can install the same server as an extension (`clipugc.mcpb` from GitHub Releases, built with `npm run build:mcpb`).
 
 ---
 

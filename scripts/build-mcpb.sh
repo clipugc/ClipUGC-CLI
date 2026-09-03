@@ -38,5 +38,16 @@ mcpb validate "$STAGE/manifest.json"
 echo "==> Packing"
 mcpb pack "$STAGE" "$BUNDLE"
 
+# Smithery variant: same files, manifest tools carry inputSchema + annotations
+# (see scripts/smithery-manifest.mjs). Zipped by hand because mcpb pack rejects
+# those keys. Publish with: smithery mcp publish dist-mcpb/clipugc-smithery.mcpb -n clipugc/clipugc
+SMITHERY_STAGE="$OUT_DIR/stage-smithery"
+SMITHERY_BUNDLE="$OUT_DIR/clipugc-smithery.mcpb"
+rm -rf "$SMITHERY_STAGE" "$SMITHERY_BUNDLE"
+cp -R "$STAGE" "$SMITHERY_STAGE"
+node scripts/smithery-manifest.mjs "$STAGE" "$SMITHERY_STAGE"
+(cd "$SMITHERY_STAGE" && zip -qr "../$(basename "$SMITHERY_BUNDLE")" . -x '*.map')
+echo "Smithery bundle: $SMITHERY_BUNDLE"
+
 echo
 echo "Bundle: $BUNDLE ($(du -h "$BUNDLE" | cut -f1))"

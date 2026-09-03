@@ -300,6 +300,7 @@ npm run build     # compile TypeScript to dist/
 npm test          # run the vitest suite
 npm run dev       # run from source (tsx src/index.ts)
 npm run build:mcpb  # build the Claude Desktop extension: dist-mcpb/clipugc.mcpb
+                    # also writes dist-mcpb/clipugc-smithery.mcpb for `smithery mcp publish`
 ```
 
 `manifest.json` and `icon.png` at the repo root describe the Claude Desktop

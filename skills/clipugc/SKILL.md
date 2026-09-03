@@ -10,6 +10,17 @@ You are helping the user run ClipUGC CLI commands. [ClipUGC](https://clipugc.com
 
 Credits are consumed server-side (duration-aware; refunds return the exact amount charged): image = 2, clip (5s) = 7, clip (10s) = 13, motion control = 3 per second of driver video (rounded up, capped at 30s), scene-staged clip (a video created with `--scene`) = 9, merge = 1.
 
+> **MCP alternative.** The same binary is an MCP server (`clipugc mcp`). If this session has the
+> `clipugc` MCP server connected (tools named `list_characters`, `create_character`, `generate_image`,
+> `list_images`, `create_clip`, `create_motion_clip`, `merge_ad`, `get_video`, `download_video`,
+> `get_credits`, `list_hooks`), prefer those tools over shelling out: they call the same API with the
+> same API key, take the same arguments as the CLI flags (underscores instead of dashes, e.g.
+> `per_page`), and return JSON. Generation tools return the job id immediately; poll `get_video`
+> (clips, and ads with `kind: "ad"`) or `list_images` (looks) until `status` is `completed`, the way
+> `--wait` would. Everything else in this skill (workspace layout, credit gates, id spaces, prompt
+> rules) applies unchanged. To connect it: `claude mcp add clipugc -- npx -y clipugc mcp`. When the
+> MCP server is not connected, use the CLI commands below.
+
 > **Creative direction lives in the `ugc-director` skill.** If the user asks "make an ad for my app", wants hook ideas, reaction styles, casting advice, or a full concept-to-ad plan, use `ugc-director` (it decides WHAT to generate: archetype, hook text, look scene, clip prompt) and come back here for command syntax. This skill is the command manual.
 
 ## Routing
@@ -71,6 +82,7 @@ Constraints to enforce before running: `--scene` max 600 chars; `--prompt` max 1
 
 Before running ANY command, always check:
 
+0. **MCP connected?** If the `clipugc` MCP tools are available in this session, call `get_credits` instead of steps 1-3: a successful reply proves the server is installed and authenticated and gives the balance in one call. If it returns an auth error, the message tells the user to run `clipugc auth login` (or set `CLIPUGC_API_KEY` for the server).
 1. **CLI installed**: Run `which clipugc`. If missing, run `npm install -g clipugc` (requires Node >= 20).
 2. **Authenticated**: Run `clipugc auth status`. If not logged in, tell the user to create an API key in the ClipUGC dashboard (https://clipugc.com/dashboard → API keys) and run `clipugc auth login`. Do NOT ask the user to paste the key into chat — `auth login` prompts for it securely in the terminal.
 **Credits packs**: `clipugc credits packs` lists purchasable packs (buy on the web dashboard / mobile IAP).

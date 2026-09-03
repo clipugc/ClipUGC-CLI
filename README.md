@@ -41,6 +41,51 @@ See **[docs/skills.md](docs/skills.md)** for what each skill knows.
 
 Prefer flags? Everything below works standalone — the skills just drive the same CLI.
 
+## Use from Claude Code / Cursor
+
+The CLI is also an MCP server. `clipugc mcp` speaks the Model Context Protocol over
+stdio, so any MCP client can create characters, looks, clips and merged ads as tools,
+without shelling out to the commands above.
+
+Log in once so the server has a key (it reads the same `~/.config/clipugc/config.json`
+the CLI uses):
+
+```bash
+npm install -g clipugc
+clipugc auth login
+```
+
+**Claude Code**
+
+```bash
+claude mcp add clipugc -- npx -y clipugc mcp
+```
+
+**Cursor** (Settings > MCP, or `.cursor/mcp.json` in your project)
+
+```json
+{
+  "mcpServers": {
+    "clipugc": {
+      "command": "npx",
+      "args": ["-y", "clipugc", "mcp"]
+    }
+  }
+}
+```
+
+The same block works in Claude Desktop's `claude_desktop_config.json`. If you would
+rather not run `clipugc auth login` on that machine, add an `env` block with
+`CLIPUGC_API_KEY` set to a key from the dashboard.
+
+Tools: `list_characters`, `create_character`, `generate_image`, `list_images`,
+`create_clip`, `create_motion_clip`, `merge_ad`, `get_video`, `download_video`,
+`get_credits`, `list_hooks`. Arguments follow the CLI flags (`--per-page` becomes
+`per_page`). Generation tools return the job id right away, like the CLI without
+`--wait`; poll with `get_video` (clips and ads) or `list_images` (looks) until the
+status is `completed`. Every tool reports its credit cost in its description, and
+`get_credits` returns the live prices.
+
 ## What it produces
 
 One character, cast once. Every picture below is the **same person** — only the

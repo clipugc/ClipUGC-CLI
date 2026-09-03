@@ -120,6 +120,30 @@ File uploads are handled automatically via presigned URLs. Accepted formats by p
 |---------|-------------|
 | `clipugc hooks suggest [--context "my app is a habit tracker"]` | Get AI-suggested hook texts for your UGC ad. |
 
+## MCP server
+
+| Command | Description |
+|---------|-------------|
+| `clipugc mcp` | Start a Model Context Protocol server over stdio for Claude Code, Cursor, Claude Desktop and other MCP clients. Uses the same API key as the CLI (`clipugc auth login` or `CLIPUGC_API_KEY`). Logs go to stderr; stdout is the protocol. |
+
+Tools exposed, with the CLI command each one mirrors:
+
+| Tool | CLI equivalent | Notes |
+|------|----------------|-------|
+| `list_characters` | `characters list` | `scope`: mine (default), discover, feed; `search`, `page`, `per_page`. |
+| `create_character` | `characters create` | `description` (preferred), `scene`, `inspiration[]`, `private`, `make_video`, `motion_prompt`; advanced `name`, `age`, `gender`, `dna_json`. 2 credits. |
+| `generate_image` | `images generate` | `character`, `shots`, `template`, `scene`, `resolution`. 2 credits per shot. |
+| `list_images` | `images list --character` | Also the poll call for looks. |
+| `create_clip` | `videos create` | `image` or `photo`, `prompt`, `scene`, `duration` (5 or 10), `keep_sound`. 7 / 13 credits. |
+| `create_motion_clip` | `videos motion` | `image` or `photo`, `driver`, `prompt`, `keep_sound`. 3 credits per driver second. |
+| `merge_ad` | `videos merge <clipId>` | `video`, `app_video`, `hook`, `music`. Returns `merged_video_id` (an ad id). |
+| `get_video` | `videos status <id>` / `ads show <adId>` | `id`, `kind`: clip (default) or ad. The poll tool. |
+| `download_video` | `videos download` / `ads download` | `id`, `kind`, `output`. |
+| `get_credits` | `credits` | Balance and live per-action costs. |
+| `list_hooks` | `hooks suggest` | `context`. |
+
+Argument names follow the CLI flags with underscores instead of dashes. Generation tools never block: they return the id, and the client polls `get_video` or `list_images`. See the README section "Use from Claude Code / Cursor" for client setup.
+
 ---
 
 [← Back to the README](../README.md)

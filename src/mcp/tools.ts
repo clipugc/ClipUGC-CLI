@@ -405,7 +405,7 @@ export const TOOLS: readonly ToolDefinition[] = [
       kind: z.enum(['clip', 'ad']).optional().describe('"clip" (default) for a character video id, "ad" for a merged_video_id.'),
       output: z.string().optional().describe('Destination file path (same as --output). Default: clipugc-video-<id>.mp4 or clipugc-ad-<id>.mp4 in the server\'s working directory.'),
     },
-    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     handler: async (args) => {
       const api = await createApiClient();
       const dest = args.kind === 'ad'

@@ -17,6 +17,23 @@ import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+
+/** Every tool `clipugc mcp` must expose. Kept in sync with src/mcp/tools.ts by the unit tests. */
+const MCP_TOOL_NAMES = [
+  'list_characters',
+  'create_character',
+  'generate_image',
+  'list_images',
+  'create_clip',
+  'create_motion_clip',
+  'merge_ad',
+  'get_video',
+  'download_video',
+  'get_credits',
+  'list_hooks',
+];
 
 const BASE_URL = process.env.CLIPUGC_E2E_BASE_URL ?? 'http://localhost:8080/api/v1';
 const CLI = path.resolve(process.cwd(), 'dist/index.js');
@@ -116,6 +133,57 @@ async function getToken(): Promise<string> {
   return token;
 }
 
+/**
+ * Start the built binary as an MCP server over stdio (`node dist/index.js mcp`), run the
+ * initialize handshake, list the tools, and call get_credits against the same server the
+ * CLI steps use. The config file already holds the token from `auth login`.
+ */
+async function mcpSmoke(): Promise<void> {
+  step += 1;
+  log(`step ${step}: clipugc mcp (stdio initialize, tools/list, tools/call get_credits)`);
+
+  const env: Record<string, string> = {};
+  for (const [k, v] of Object.entries(process.env)) if (v !== undefined) env[k] = v;
+  env.CLIPUGC_CONFIG_PATH = configPath;
+  env.CLIPUGC_API_BASE_URL = BASE_URL;
+  env.FORCE_COLOR = '0';
+
+  const transport = new StdioClientTransport({ command: 'node', args: [CLI, 'mcp'], env, stderr: 'inherit' });
+  const client = new Client({ name: 'clipugc-e2e', version: '0.0.0' });
+  try {
+    await client.connect(transport);
+    const serverInfo = client.getServerVersion();
+    if (serverInfo?.name !== 'clipugc') fail(`mcp initialize returned unexpected serverInfo: ${JSON.stringify(serverInfo)}`);
+    pass(`mcp initialize → ${serverInfo.name} ${serverInfo.version}`);
+
+    const { tools } = await client.listTools();
+    const names = tools.map((t) => t.name);
+    const missing = MCP_TOOL_NAMES.filter((n) => !names.includes(n));
+    const extra = names.filter((n) => !MCP_TOOL_NAMES.includes(n));
+    if (missing.length > 0 || extra.length > 0) {
+      fail(`mcp tools/list mismatch. missing: [${missing.join(', ')}] extra: [${extra.join(', ')}]`);
+    }
+    pass(`mcp tools/list → ${names.length} tools`);
+
+    const result = await client.callTool({ name: 'get_credits', arguments: {} });
+    const content = result.content as Array<{ type: string; text?: string }>;
+    const text = content.find((c) => c.type === 'text')?.text ?? '';
+    if (result.isError) fail(`mcp get_credits returned an error: ${text}`);
+    let credits: { balance?: unknown; costs?: unknown };
+    try {
+      credits = JSON.parse(text) as typeof credits;
+    } catch {
+      fail(`mcp get_credits returned non-JSON text:\n${text}`);
+    }
+    if (typeof credits.balance !== 'number' || typeof credits.costs !== 'object') {
+      fail(`mcp get_credits payload lacks balance/costs: ${text}`);
+    }
+    pass(`mcp get_credits → balance ${credits.balance}`);
+  } finally {
+    await client.close().catch(() => undefined);
+  }
+}
+
 function makeDummyFile(name: string, sizeKb = 64): string {
   const p = path.join(tmpDir, name);
   fs.writeFileSync(p, Buffer.alloc(sizeKb * 1024, 7));
@@ -138,6 +206,9 @@ async function main(): Promise<void> {
   const creditsRes = run(['credits'], { allowFail: true });
   if (creditsRes.code === 0) pass('credits');
   else warn('credits endpoint failed (may not be deployed yet) — continuing');
+
+  // MCP server: same binary, same token, over stdio.
+  await mcpSmoke();
 
   // Character — description path (web parity): the first look generates automatically.
   const character = runJson([

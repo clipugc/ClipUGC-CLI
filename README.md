@@ -43,6 +43,9 @@ Prefer flags? Everything below works standalone — the skills just drive the sa
 
 ## Use from Claude Code / Cursor
 
+[![smithery badge](https://smithery.ai/badge/clipugc/clipugc)](https://smithery.ai/servers/clipugc/clipugc)
+Listed on the [MCP Registry](https://registry.modelcontextprotocol.io/?search=clipugc) and [Smithery](https://smithery.ai/servers/clipugc/clipugc).
+
 The CLI is also an MCP server. `clipugc mcp` speaks the Model Context Protocol over
 stdio, so any MCP client can create characters, looks, clips and merged ads as tools,
 without shelling out to the commands above.

@@ -61,6 +61,13 @@ clipugc auth login
 claude mcp add clipugc -- npx -y clipugc mcp
 ```
 
+If Claude Code reports "Connection closed" on the first start, npx was still
+downloading the package when Claude gave up. Run `npx -y clipugc mcp` once in a
+terminal (Ctrl+C after it prints "11 tools ready"), then reconnect. Or install
+it once with `npm i -g clipugc` and register `claude mcp add clipugc -- clipugc mcp`.
+Do not add it from inside a checkout of this repo: there npx resolves `clipugc`
+to the local project instead of the npm package.
+
 **Cursor** (Settings > MCP, or `.cursor/mcp.json` in your project)
 
 ```json
@@ -82,8 +89,8 @@ with `CLIPUGC_API_KEY` set to a key from the dashboard.
 Claude Desktop installs the server as an extension, so there is no config file to edit
 and no Node install needed beyond the app itself:
 
-1. Download `clipugc.mcpb` from the
-   [latest GitHub release](https://github.com/clipugc/ClipUGC-CLI/releases/latest).
+1. Download [clipugc.mcpb](https://github.com/clipugc/ClipUGC-CLI/releases/latest/download/clipugc.mcpb)
+   from the latest GitHub release.
 2. Double-click the file, or open Claude Desktop, go to **Settings > Extensions**,
    and choose **Install Extension** (Advanced settings on some versions).
 3. Paste your ClipUGC API key when asked. Create one in the

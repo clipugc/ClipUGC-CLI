@@ -1,0 +1,46 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.clipugc/clipugc",
+  "title": "ClipUGC",
+  "description": "Create AI influencer characters, looks, video clips and merged UGC app ads with ClipUGC.",
+  "websiteUrl": "https://clipugc.com",
+  "repository": {
+    "url": "https://github.com/clipugc/ClipUGC-CLI",
+    "source": "github"
+  },
+  "version": "1.1.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "clipugc",
+      "version": "1.1.2",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp",
+          "description": "Start the stdio MCP server (the same binary is also the clipugc CLI)",
+          "isRequired": true
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "CLIPUGC_API_KEY",
+          "description": "ClipUGC API key from the dashboard (API Keys). Optional when `clipugc auth login` was run on this machine.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "CLIPUGC_API_BASE_URL",
+          "description": "Override the API base URL (default https://clipugc.com/api/v1). Only for self-hosted or local instances.",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

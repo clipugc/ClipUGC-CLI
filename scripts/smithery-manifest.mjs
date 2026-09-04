@@ -24,6 +24,8 @@ const transport = new StdioClientTransport({
 const client = new Client({ name: 'smithery-manifest', version: '0' });
 await client.connect(transport);
 const { tools } = await client.listTools();
+const { prompts } = await client.listPrompts();
+const { resources } = await client.listResources();
 await client.close();
 
 const manifestPath = path.join(outDir, 'manifest.json');
@@ -34,5 +36,23 @@ manifest.tools = tools.map((tool) => ({
   inputSchema: tool.inputSchema,
   annotations: tool.annotations ?? {},
 }));
+// Smithery wants MCP-shaped prompt arguments (objects), not the MCPB string list.
+manifest.prompts = prompts.map((prompt) => ({
+  name: prompt.name,
+  description: prompt.description,
+  arguments: (prompt.arguments ?? []).map((argument) => ({
+    name: argument.name,
+    description: argument.description,
+    required: argument.required ?? false,
+  })),
+}));
+manifest.resources = resources.map((resource) => ({
+  uri: resource.uri,
+  name: resource.name,
+  description: resource.description,
+  mimeType: resource.mimeType,
+}));
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
-console.log(`smithery manifest: ${manifest.tools.length} tools with inputSchema`);
+console.log(
+  `smithery manifest: ${manifest.tools.length} tools with inputSchema, ${manifest.prompts.length} prompts, ${manifest.resources.length} resources`,
+);

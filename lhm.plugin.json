@@ -1,7 +1,7 @@
 {
   "identifier": "clipugc",
   "name": "ClipUGC",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Generate AI UGC videos for your app from Claude Code, Cursor or any MCP client: create an AI influencer, make her photo, turn it into a talking 5 or 10 second video, add your app screen recording and a hook line, download the file. Needs a ClipUGC API key.",
   "author": "ClipUGC",
   "authorUrl": "https://clipugc.com",
@@ -466,6 +466,68 @@
       }
     }
   ],
-  "resources": [],
-  "prompts": []
+  "resources": [
+    {
+      "name": "pipeline",
+      "title": "ClipUGC pipeline",
+      "uri": "clipugc://pipeline",
+      "description": "The order of tool calls for one UGC video, with polling and id rules.",
+      "mimeType": "text/plain"
+    },
+    {
+      "name": "pricing",
+      "title": "ClipUGC credit costs",
+      "uri": "clipugc://pricing",
+      "description": "Documented credit cost of each action and the plan that covers it. get_credits has the live table.",
+      "mimeType": "text/plain"
+    }
+  ],
+  "prompts": [
+    {
+      "name": "make_ugc_video",
+      "title": "Make a UGC video for an app",
+      "description": "Walks the model through the whole ClipUGC pipeline for one video: pick or create the influencer, make the clip, add the app recording, download.",
+      "arguments": [
+        {
+          "name": "app",
+          "description": "What the app does, in one or two sentences.",
+          "required": true
+        },
+        {
+          "name": "message",
+          "description": "What she should say or do in the clip. Leave empty to let the model write it.",
+          "required": false
+        },
+        {
+          "name": "recording",
+          "description": "Local path to the app screen recording to add, if any.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "new_ai_influencer",
+      "title": "Create a new AI influencer",
+      "description": "Creates a private ClipUGC character from a plain description and waits for her first photo.",
+      "arguments": [
+        {
+          "name": "description",
+          "description": "Who she is: age range, style, setting, mood. Plain words.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "hook_ideas",
+      "title": "Hook line ideas for an app",
+      "description": "Asks ClipUGC for hook lines (the first words on screen) for an app, then picks the strongest three.",
+      "arguments": [
+        {
+          "name": "app",
+          "description": "What the app does and who it is for.",
+          "required": true
+        }
+      ]
+    }
+  ]
 }

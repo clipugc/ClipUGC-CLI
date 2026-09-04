@@ -11,6 +11,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { getVersion } from '../version.js';
 import { getConfigPath, resolveApiBaseUrl, resolveApiKey } from '../utils/config.js';
 import { TOOLS, runTool } from './tools.js';
+import { registerExtras } from './extras.js';
 
 export const MCP_SERVER_NAME = 'clipugc';
 
@@ -40,6 +41,8 @@ export function createMcpServer(): McpServer {
       async (args) => runTool(tool, args),
     );
   }
+
+  registerExtras(server);
 
   return server;
 }

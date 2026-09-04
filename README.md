@@ -103,6 +103,10 @@ and no Node install needed beyond the app itself:
 The extension runs the same `clipugc mcp` server as above. To build the bundle
 yourself, run `npm run build:mcpb` (see "Local development").
 
+Prompts: `make_ugc_video`, `new_ai_influencer`, `hook_ideas` (ready-made starts for the
+common jobs). Resources: `clipugc://pipeline` (the order of calls) and `clipugc://pricing`
+(documented credit costs; `get_credits` has the live table).
+
 Tools: `list_characters`, `create_character`, `generate_image`, `list_images`,
 `create_clip`, `create_motion_clip`, `merge_ad`, `get_video`, `download_video`,
 `get_credits`, `list_hooks`. Arguments follow the CLI flags (`--per-page` becomes

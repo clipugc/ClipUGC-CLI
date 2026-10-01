@@ -36,7 +36,7 @@
         },
         {
           "name": "CLIPUGC_API_BASE_URL",
-          "description": "Override the API base URL (default https://clipugc.com/api/v1). Only for self-hosted or local instances.",
+          "description": "Override the API base URL (default https://clipugc.com/api/v2). Only for self-hosted or local instances.",
           "isRequired": false,
           "isSecret": false
         }

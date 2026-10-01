@@ -6,7 +6,14 @@ import type { ClipUgcConfig } from '../types/index.js';
 const CONFIG_DIR = path.join(os.homedir(), '.config', 'clipugc');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
-export const DEFAULT_API_BASE_URL = 'https://clipugc.com/api/v1';
+export const DEFAULT_API_BASE_URL = 'https://clipugc.com/api/v2';
+
+/**
+ * The default up to 1.2.x: saveConfig writes the whole config, so installs carry it in
+ * config.json. Read as the current default; a custom URL is left alone. /api/v1 keeps
+ * working on the server for older CLI versions.
+ */
+export const LEGACY_DEFAULT_API_BASE_URL = 'https://clipugc.com/api/v1';
 
 const DEFAULT_CONFIG: ClipUgcConfig = {
   apiBaseUrl: DEFAULT_API_BASE_URL,
@@ -31,7 +38,11 @@ export async function loadConfig(): Promise<ClipUgcConfig> {
     const file = getConfigPath();
     if (await fs.pathExists(file)) {
       const raw = await fs.readJson(file);
-      return { ...DEFAULT_CONFIG, ...raw };
+      const config: ClipUgcConfig = { ...DEFAULT_CONFIG, ...raw };
+      if (config.apiBaseUrl.replace(/\/+$/, '') === LEGACY_DEFAULT_API_BASE_URL) {
+        config.apiBaseUrl = DEFAULT_API_BASE_URL;
+      }
+      return config;
     }
   } catch {
     // Corrupt or unreadable config — fall back to defaults

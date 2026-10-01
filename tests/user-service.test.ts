@@ -3,7 +3,7 @@ import { ApiClient } from '../src/services/api.js';
 import { getUser, getCredits, getCreditTransactions, deleteAccount } from '../src/services/user.service.js';
 import { AuthError, InsufficientCreditsError } from '../src/utils/errors.js';
 
-const BASE = 'https://example.test/api/v1';
+const BASE = 'https://example.test/api/v2';
 
 function envelopeResponse(envelope: unknown, httpStatus = 200): Response {
   return new Response(JSON.stringify(envelope), {
@@ -79,7 +79,7 @@ describe('user.service', () => {
     expect(result.transactions[0].amount).toBe(-7);
     expect(result.pagination?.has_more_pages).toBe(true);
     const url = new URL(String(fetchMock.mock.calls[0][0]));
-    expect(url.pathname).toBe('/api/v1/credits/transactions');
+    expect(url.pathname).toBe('/api/v2/credits/transactions');
     expect(url.searchParams.get('per_page')).toBe('2');
     expect(url.searchParams.get('page')).toBe('1');
   });

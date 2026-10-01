@@ -1,6 +1,6 @@
 # ClipUGC CLI — Progress
 
-Track B: public `clipugc` npm CLI against the ClipUGC `/api/v1` REST API.
+Track B: public `clipugc` npm CLI against the ClipUGC `/api/v2` REST API (`/api/v1` until 0.3.x).
 
 ## Implemented
 

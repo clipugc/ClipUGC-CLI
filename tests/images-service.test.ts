@@ -12,7 +12,7 @@ import {
   parseShotTypes,
 } from '../src/services/images.service.js';
 
-const BASE = 'https://example.test/api/v1';
+const BASE = 'https://example.test/api/v2';
 
 function envelopeResponse(data: unknown, statusCode = 200): Response {
   return new Response(JSON.stringify({ statusCode, errorMessage: null, data, message: null }), {

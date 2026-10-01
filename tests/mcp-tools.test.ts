@@ -41,7 +41,7 @@ import * as hooks from '../src/services/hooks.service.js';
 import * as uploads from '../src/services/upload.service.js';
 import { TOOLS, TOOL_NAMES, getTool, runTool, type ToolDefinition } from '../src/mcp/tools.js';
 
-const FAKE_API = { baseUrl: 'https://example.test/api/v1' } as never;
+const FAKE_API = { baseUrl: 'https://example.test/api/v2' } as never;
 
 function tool(name: string): ToolDefinition {
   const def = getTool(name);

@@ -12,6 +12,7 @@ import {
   resolveApiKey,
   resolveApiBaseUrl,
   DEFAULT_API_BASE_URL,
+  LEGACY_DEFAULT_API_BASE_URL,
 } from '../src/utils/config.js';
 
 let tmpDir: string;
@@ -35,6 +36,24 @@ describe('config', () => {
     const config = await loadConfig();
     expect(config.apiBaseUrl).toBe(DEFAULT_API_BASE_URL);
     expect(config.apiKey).toBe('');
+  });
+
+  it('defaults to the /api/v2 base URL', () => {
+    expect(DEFAULT_API_BASE_URL).toBe('https://clipugc.com/api/v2');
+  });
+
+  it('moves a config saved with the old /api/v1 default to /api/v2', async () => {
+    await fs.writeJson(getConfigPath(), { apiBaseUrl: LEGACY_DEFAULT_API_BASE_URL, apiKey: 'tok_old', email: 'me@example.com' });
+    expect((await loadConfig()).apiBaseUrl).toBe(DEFAULT_API_BASE_URL);
+    expect((await loadConfig()).apiKey).toBe('tok_old');
+
+    await fs.writeJson(getConfigPath(), { apiBaseUrl: `${LEGACY_DEFAULT_API_BASE_URL}/`, apiKey: 'tok_old' });
+    expect((await loadConfig()).apiBaseUrl).toBe(DEFAULT_API_BASE_URL);
+  });
+
+  it('leaves a custom base URL alone, even on /api/v1', async () => {
+    await fs.writeJson(getConfigPath(), { apiBaseUrl: 'http://localhost:8090/api/v1', apiKey: '' });
+    expect((await loadConfig()).apiBaseUrl).toBe('http://localhost:8090/api/v1');
   });
 
   it('round-trips save and load', async () => {

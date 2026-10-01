@@ -10,7 +10,7 @@ import {
   ValidationError,
 } from '../src/utils/errors.js';
 
-const BASE = 'https://example.test/api/v1';
+const BASE = 'https://example.test/api/v2';
 
 function envelopeResponse(envelope: unknown, httpStatus = 200): Response {
   return new Response(JSON.stringify(envelope), {

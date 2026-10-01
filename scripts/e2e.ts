@@ -6,7 +6,7 @@
  *   npm run build && npm run e2e
  *
  * Env:
- *   CLIPUGC_E2E_BASE_URL  (default http://localhost:8080/api/v1)
+ *   CLIPUGC_E2E_BASE_URL  (default http://localhost:8080/api/v2)
  *   CLIPUGC_E2E_TOKEN     (optional; otherwise fetched from GET /test/login, a local-only route)
  *
  * The script fails fast with a clear message when the server is not reachable.
@@ -35,7 +35,7 @@ const MCP_TOOL_NAMES = [
   'list_hooks',
 ];
 
-const BASE_URL = process.env.CLIPUGC_E2E_BASE_URL ?? 'http://localhost:8080/api/v1';
+const BASE_URL = process.env.CLIPUGC_E2E_BASE_URL ?? 'http://localhost:8080/api/v2';
 const CLI = path.resolve(process.cwd(), 'dist/index.js');
 
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'clipugc-e2e-'));

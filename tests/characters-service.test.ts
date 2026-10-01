@@ -13,7 +13,7 @@ import {
   setCharacterVisibility,
 } from '../src/services/characters.service.js';
 
-const BASE = 'https://example.test/api/v1';
+const BASE = 'https://example.test/api/v2';
 
 function envelopeResponse(data: unknown, statusCode = 200): Response {
   return new Response(JSON.stringify({ statusCode, errorMessage: null, data, message: null }), {
@@ -43,7 +43,7 @@ describe('characters service', () => {
       fetchMock.mockResolvedValue(envelopeResponse([]));
       await listCharacters();
       const url = new URL(String(fetchMock.mock.calls[0][0]));
-      expect(url.pathname).toBe('/api/v1/ai-characters');
+      expect(url.pathname).toBe('/api/v2/ai-characters');
       expect(url.searchParams.get('scope')).toBe('mine');
       expect(url.searchParams.has('search')).toBe(false);
       expect(url.searchParams.has('page')).toBe(false);

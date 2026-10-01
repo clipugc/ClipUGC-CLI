@@ -8,7 +8,7 @@
 
 /** Persisted CLI configuration (~/.config/clipugc/config.json). */
 export interface ClipUgcConfig {
-  /** API base URL, e.g. https://clipugc.com/api/v1 */
+  /** API base URL, e.g. https://clipugc.com/api/v2 */
   apiBaseUrl: string;
   /** Sanctum personal access token created from the ClipUGC dashboard. */
   apiKey: string;

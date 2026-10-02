@@ -1,7 +1,7 @@
 {
   "identifier": "clipugc",
   "name": "ClipUGC",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Generate AI UGC videos for your app from Claude Code, Cursor or any MCP client: create an AI influencer, make her photo, turn it into a talking 5 or 10 second video, add your app screen recording and a hook line, download the file. Needs a ClipUGC API key.",
   "author": "ClipUGC",
   "authorUrl": "https://clipugc.com",

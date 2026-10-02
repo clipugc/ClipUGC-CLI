@@ -1,6 +1,6 @@
 {
   "name": "clipugc",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Official CLI for ClipUGC — create AI characters, generate looks, and produce UGC-style videos for your mobile app from the terminal.",
   "mcpName": "io.github.clipugc/clipugc",
   "type": "module",

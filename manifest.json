@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "clipugc",
   "display_name": "ClipUGC",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Create AI influencer characters, looks, video clips and merged UGC app ads with ClipUGC.",
   "long_description": "ClipUGC makes UGC-style ads for mobile apps with AI creators. This extension gives Claude Desktop the same tools as the `clipugc` command line: create an AI character, generate more looks of the same face, animate a look into a short silent-reaction clip, merge your app screen recording under a hook text, and download the finished ad.\n\nYou need a ClipUGC account on a paid plan and an API key from https://clipugc.com/dashboard (API Keys). Generation spends credits from your ClipUGC balance; the `get_credits` tool shows the balance and the live cost of each action.",
   "author": {

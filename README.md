@@ -1,6 +1,6 @@
 # ClipUGC CLI
 
-Official command-line interface for **[ClipUGC](https://clipugc.com)** — create AI
+Official command-line interface for **[ClipUGC](https://clipugc.com/?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories)** — create AI
 influencers, generate photorealistic looks of the same person, turn them into
 silent-reaction clips, and merge your app's screen recording into a ready-to-post
 UGC ad. All from the terminal; nothing renders locally.
@@ -11,7 +11,7 @@ clipugc auth login
 ```
 
 Requires **Node.js >= 20**. Create an API key in the
-[ClipUGC dashboard](https://clipugc.com/dashboard) (API keys section).
+[ClipUGC dashboard](https://clipugc.com/dashboard?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories) (API keys section).
 API keys are available on paid plans (Professional and Business).
 
 ## Use it with Claude Code
@@ -40,6 +40,44 @@ skills are unprefixed — `/ugc-director`, `/persona-account`, `/clipugc`.)
 See **[docs/skills.md](docs/skills.md)** for what each skill knows.
 
 Prefer flags? Everything below works standalone — the skills just drive the same CLI.
+
+## Install in Gemini CLI, Cursor or VS Code
+
+These use the hosted ClipUGC server at `https://clipugc.com/mcp`. Nothing runs on
+your machine and there is no API key to copy: the first call opens a browser so
+you can sign in with your ClipUGC account.
+
+**Gemini CLI**
+
+```bash
+gemini extensions install https://github.com/clipugc/ClipUGC-CLI
+```
+
+This adds the hosted server, a short guide (`GEMINI.md`) and the skills.
+
+**Cursor**
+
+Once the ClipUGC plugin is listed in the Cursor Marketplace, install it there to
+get the server and the skills. Until then, add the server by hand in
+Settings > MCP or `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "clipugc": {
+      "url": "https://clipugc.com/mcp"
+    }
+  }
+}
+```
+
+**VS Code** (GitHub Copilot agent mode)
+
+```bash
+code --add-mcp '{"name":"clipugc","type":"http","url":"https://clipugc.com/mcp"}'
+```
+
+Or search `@mcp clipugc` in the Extensions view once it shows up in the gallery.
 
 ## Use from Claude Code / Cursor
 
@@ -98,7 +136,7 @@ and no Node install needed beyond the app itself:
 2. Double-click the file, or open Claude Desktop, go to **Settings > Extensions**,
    and choose **Install Extension** (Advanced settings on some versions).
 3. Paste your ClipUGC API key when asked. Create one in the
-   [dashboard](https://clipugc.com/dashboard) under API Keys.
+   [dashboard](https://clipugc.com/dashboard?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories) under API Keys.
 
 The extension runs the same `clipugc mcp` server as above. To build the bundle
 yourself, run `npm run build:mcpb` (see "Local development").
@@ -329,7 +367,7 @@ extension settings, and is never sent anywhere else.
 
 How the ClipUGC service stores and handles that data, including retention and the
 AI providers it uses to render videos, is described in the ClipUGC privacy policy:
-<https://clipugc.com/privacy-policy>.
+<https://clipugc.com/privacy-policy?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories>.
 
 Questions or deletion requests: <clipugc@gmail.com>.
 

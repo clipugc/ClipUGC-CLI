@@ -1,0 +1,20 @@
+{
+  "name": "clipugc",
+  "version": "1.3.0",
+  "description": "UGC videos for your app with AI influencers who keep the same face. Adds the hosted ClipUGC server (sign in with your ClipUGC account) and the ClipUGC skills.",
+  "author": {
+    "name": "ClipUGC"
+  },
+  "homepage": "https://clipugc.com",
+  "repository": "https://github.com/clipugc/ClipUGC-CLI",
+  "license": "MIT",
+  "keywords": [
+    "ugc",
+    "ai-influencer",
+    "ai-video",
+    "mobile-apps",
+    "mcp"
+  ],
+  "logo": "icon.png",
+  "skills": "./skills/"
+}

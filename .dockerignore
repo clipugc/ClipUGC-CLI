@@ -1,0 +1,10 @@
+node_modules
+dist
+dist-mcpb
+coverage
+.git
+.env
+*.log
+tests
+docs
+skills

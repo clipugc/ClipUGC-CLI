@@ -105,10 +105,10 @@ export function registerVideosCommands(program: Command): void {
 
   videos
     .command('list')
-    .description('List your character videos (clips). --finals lists finished ads instead')
+    .description('List your character videos (clips). --finals lists finished videos instead')
     .option('--character <id>', 'Only videos of this AI character')
-    .option('--mergeable', 'Only completed, unmerged clips (ready for `videos merge`)')
-    .option('--finals', 'List finished UGC ads instead of clips (same as `clipugc ads list`)')
+    .option('--mergeable', 'Only completed clips that have no finished video yet (ready for `videos merge`)')
+    .option('--finals', 'List finished UGC videos instead of clips (same as `clipugc finished list`)')
     .option('--page <n>', 'Page number', parsePositiveInt('--page'))
     .option('--per-page <n>', 'Results per page (max 50)', parsePositiveInt('--per-page'))
     .action(async (opts: { character?: string; mergeable?: boolean; finals?: boolean; page?: number; perPage?: number }, cmd: Command) => {
@@ -116,13 +116,13 @@ export function registerVideosCommands(program: Command): void {
       const api = await createApiClient();
 
       // Ads are a separate resource, so --finals is not a filter on the clip list any more: it
-      // switches to /merged-videos. The ids it prints are AD ids — feed them to `clipugc ads`.
+      // switches to /merged-videos. The ids it prints are finished video ids; feed them to `clipugc finished`.
       if (opts.finals) {
         if (opts.mergeable) {
-          throw new ValidationError('--mergeable and --finals are mutually exclusive — pick one.');
+          throw new ValidationError('--mergeable and --finals cannot be used together. Pick one.');
         }
         if (opts.character) {
-          throw new ValidationError('--character filters clips, not ads. Drop it, or drop --finals.');
+          throw new ValidationError('--character filters clips, not finished videos. Drop it, or drop --finals.');
         }
         const ads = await listMergedVideos(api, { page: opts.page, perPage: opts.perPage });
         if (json) {
@@ -147,7 +147,7 @@ export function registerVideosCommands(program: Command): void {
       printTable(items, [
         { header: 'ID', value: (v) => v.id },
         { header: 'Status', value: (v) => formatStatus(v.status ?? '') },
-        { header: 'Merged', value: (v) => mergedLabel(v) },
+        { header: 'Finished', value: (v) => mergedLabel(v) },
         { header: 'Type', value: (v) => v.kind ?? v.type },
         { header: 'Created', value: (v) => v.created_at },
       ]);
@@ -158,7 +158,7 @@ export function registerVideosCommands(program: Command): void {
     .command('create')
     .description('Generate a character video from an image (image-to-video). Costs 7 credits (5s) or 13 (10s); a --scene staged clip adds the image cost (9 at 5s, 15 at 10s)')
     .option('--image <lookId>', 'ID of a generated character look/reference image')
-    .option('--photo <file>', 'Path to your own photo (png/jpg/jpeg/webp) — uploaded first')
+    .option('--photo <file>', 'Path to your own photo (png/jpg/jpeg/webp), uploaded first')
     .option('--prompt <text>', 'What the character should say/do (max 1500 chars)')
     .option('--scene <text>', 'Extra scene description, max 600 chars (scene-staged clip: 9 credits at 5s, 15 at 10s)')
     .option('--duration <seconds>', 'Video duration: 5 or 10 (default 5). 5s = 7 credits, 10s = 13', parsePositiveInt('--duration'))
@@ -195,7 +195,7 @@ export function registerVideosCommands(program: Command): void {
     .command('motion')
     .description('Generate a character video driven by a reference video (motion control). Costs 3 credits per second of driver video (rounded up, capped at 30s)')
     .option('--image <lookId>', 'ID of a generated character look/reference image')
-    .option('--photo <file>', 'Path to your own photo (png/jpg/jpeg/webp) — uploaded first')
+    .option('--photo <file>', 'Path to your own photo (png/jpg/jpeg/webp), uploaded first')
     .requiredOption('--driver <videoFile>', 'Driver video (mp4/mov, max 50 MB and 30s) whose motion is applied')
     .option('--prompt <text>', 'What the character should say/do (max 1500 chars)')
     .option('--keep-sound', "Keep the driver video's original sound")
@@ -229,12 +229,12 @@ export function registerVideosCommands(program: Command): void {
   videos
     .command('merge <videoId>')
     .description(
-      'Merge your app screen recording with the character clip into a final UGC video, with a hook text overlay (and optional background music). Free',
+      'Put your app screen recording and a hook text overlay (and optional background music) into the character clip to make the finished UGC video. Free',
     )
-    .requiredOption('--app-video <file>', 'App screen recording (mp4/mov) — uploaded first')
+    .requiredOption('--app-video <file>', 'App screen recording (mp4/mov), uploaded first')
     .requiredOption('--hook <text>', 'Hook text overlay (max 150 chars)')
-    .option('--music <file>', 'Background music (mp3/wav/m4a) — uploaded first')
-    .option('--wait', 'Wait until the merge completes')
+    .option('--music <file>', 'Background music (mp3/wav/m4a), uploaded first')
+    .option('--wait', 'Wait until the finished video is ready')
     .action(
       async (
         videoId: string,
@@ -253,14 +253,14 @@ export function registerVideosCommands(program: Command): void {
         if (opts.wait) {
           if (!adId) {
             throw new ApiError(
-              'The merge was accepted but the API did not return a merged_video_id, so --wait has nothing to poll. Find the ad with `clipugc ads list`.',
+              'The request was accepted but the API did not return a merged_video_id, so --wait has nothing to poll. Find the video with `clipugc finished list`.',
             );
           }
-          const final = await waitForMerge(() => getMergedVideo(api, adId), { label: 'Merging ad', quiet: json });
+          const final = await waitForMerge(() => getMergedVideo(api, adId), { label: 'Rendering video', quiet: json });
           if (json) {
             printJson(final);
           } else {
-            logger.hint(`Download the finished ad with \`clipugc ads download ${adId}\``);
+            logger.hint(`Download the finished video with \`clipugc finished download ${adId}\``);
           }
           return;
         }
@@ -269,11 +269,11 @@ export function registerVideosCommands(program: Command): void {
           printJson(video);
           return;
         }
-        logger.success(`Merge queued${adId ? ` (ad ${adId}, from clip ${videoId})` : ''}. It renders in the background.`);
+        logger.success(`Finished video queued${adId ? ` (video ${adId}, from clip ${videoId})` : ''}. It renders in the background.`);
         logger.hint(
           adId
-            ? `Wait for it with \`clipugc ads show ${adId}\` — or re-run with --wait.`
-            : 'Find it with `clipugc ads list` — or re-run with --wait.',
+            ? `Wait for it with \`clipugc finished show ${adId}\`, or re-run with --wait.`
+            : 'Find it with `clipugc finished list`, or re-run with --wait.',
         );
       },
     );
@@ -301,7 +301,7 @@ export function registerVideosCommands(program: Command): void {
         logger.hint(`Download the clip with \`clipugc videos download ${video.id}\``);
       }
       if (video.merged_video_id != null) {
-        logger.hint(`The ad made from this clip is \`clipugc ads show ${video.merged_video_id}\``);
+        logger.hint(`The finished video made from this clip is \`clipugc finished show ${video.merged_video_id}\``);
       }
     });
 
@@ -320,7 +320,7 @@ export function registerVideosCommands(program: Command): void {
       const mergeStatus = typeof check.merge_status === 'string' ? check.merge_status : undefined;
       const media = check.media as { has_merged?: boolean } | undefined;
       if (mergeStatus || media?.has_merged) {
-        logger.kv('Merge', mergeStatus ?? (media?.has_merged ? 'completed' : '—'));
+        logger.kv('Finished video', mergeStatus ?? (media?.has_merged ? 'completed' : '-'));
       }
       if (check.status === 'failed') {
         const reason = check.failure_reason || check.error_message;
@@ -328,11 +328,11 @@ export function registerVideosCommands(program: Command): void {
         logger.hint(`Retry with \`clipugc videos retry ${id}\``);
       }
       if (mergeStatus === 'failed') {
-        logger.warn('The merge failed. Re-render it with `clipugc ads retry <adId>` — merging is free.');
+        logger.warn('The finished video failed. Render it again with `clipugc finished retry <videoId>`. It is free.');
       }
       const adId = check.merged_video_id;
       if (adId != null) {
-        logger.hint(`Ad made from this clip: \`clipugc ads show ${String(adId)}\``);
+        logger.hint(`Finished video made from this clip: \`clipugc finished show ${String(adId)}\``);
       }
       if (check.status === 'completed') {
         logger.hint(`Download it with \`clipugc videos download ${id}\``);

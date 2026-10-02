@@ -120,7 +120,7 @@ export function registerCharactersCommands(program: Command): void {
     .option('--motion-prompt <text>', 'Motion/action prompt for that first clip (requires --make-video)')
     .option('--wait', 'Wait for the first look to finish generating')
     // Advanced: raw structured DNA instead of a description (rarely needed).
-    .option('--name <full name>', '[advanced] Full name (2-120 chars) — structured create without a description')
+    .option('--name <full name>', '[advanced] Full name (2-120 chars), structured create without a description')
     .option('--age <n>', '[advanced] Age (18-99)')
     .option('--gender <gender>', '[advanced] Gender (e.g. male, female, other)')
     .option('--dna-json <file-or-json>', '[advanced] Appearance DNA fields: inline JSON object or a JSON file path')

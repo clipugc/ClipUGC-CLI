@@ -94,7 +94,7 @@ export function registerImagesCommands(program: Command): void {
         if (json) {
           printJson(raw);
         } else {
-          logger.warn('Generation started but no image ids were returned — cannot wait. Check `clipugc images list`.');
+          logger.warn('Generation started but no image ids were returned, so it cannot wait. Check `clipugc images list`.');
         }
         return;
       }
@@ -230,7 +230,7 @@ export function registerImagesCommands(program: Command): void {
         if (json) {
           printJson(raw);
         } else {
-          logger.warn('Variation started but no image ids were returned — cannot wait. Check `clipugc images list`.');
+          logger.warn('Variation started but no image ids were returned, so it cannot wait. Check `clipugc images list`.');
         }
         return;
       }

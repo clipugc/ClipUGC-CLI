@@ -48,7 +48,7 @@ export function printPagination(pagination: Pagination | undefined): void {
   if (!pagination) return;
   const { current_page, last_page, total } = pagination;
   let line = `page ${current_page} of ${last_page} (${total} total)`;
-  if (pagination.has_more_pages) line += ' — use --page to see more';
+  if (pagination.has_more_pages) line += '. Use --page to see more';
   console.log(chalk.dim(line));
 }
 

@@ -2,11 +2,11 @@
 
 Seven creator-persona profiles. Each gives a persona sketch, an aesthetic palette, a settings pool, a wardrobe, a voice, 4–5 **content pillars** (the recurring post types the next-post loop draws from), a `never_posts` boundary, and a ready `--description`.
 
-**Different axis from ugc-director's `casting.md`.** That file casts the person who makes an APP CATEGORY's buyer convert (a one-off ad). This file casts a CREATOR who has to be plausible for months in a CONTENT NICHE. When the account also promotes an app, cross-check both: the persona must stay itself and still be someone that app's payer would follow.
+**Different axis from ugc-director's `casting.md`.** That file casts the person who makes an APP CATEGORY's buyer convert (a one-off promo video). This file casts a CREATOR who has to be plausible for months in a CONTENT NICHE. When the account also promotes an app, cross-check both: the persona must stay itself and still be someone that app's payer would follow.
 
-Archetype numbers in the pillar tables refer to ugc-director `references/formats.md`. Look-scene wording and clip prompts come from `references/prompts.md` — copy, don't rewrite. Two adjustments for feeds rather than ads: archetype 11 (Mid-Task Glance-Up) does far more work here, because relatability is what a feed sells, while archetype 4 (crying/confession) stays the hardest to render believably — use it rarely, never as a pillar.
+Archetype numbers in the pillar tables refer to ugc-director `references/formats.md`. Look-scene wording and clip prompts come from `references/prompts.md`, copy, don't rewrite. Two adjustments for feeds rather than promo videos: archetype 11 (Mid-Task Glance-Up) does far more work here, because relatability is what a feed sells, while archetype 4 (crying/confession) stays the hardest to render believably, use it rarely, never as a pillar.
 
-A pillar describes what the POST is about, not what the clip animates. The clip is always one silent reaction beat generated from the look (prompts.md rules: one arc, slow progression, lips closed) — the activity lives in the still, and the caption carries the substance. Never try to prompt a task being performed.
+A pillar describes what the POST is about, not what the clip animates. The clip is always one silent reaction beat generated from the look (prompts.md rules: one arc, slow progression, lips closed), the activity lives in the still, and the caption carries the substance. Never try to prompt a task being performed.
 
 ---
 
@@ -68,7 +68,7 @@ A pillar describes what the POST is about, not what the clip animates. The clip 
 | Honest struggle with hope | A hard week, said plainly | car | 7 Head-Shake |
 | Sunday / community | Getting ready to go, doorway light | bedroom / doorway | 1 Smirk (soft) |
 
-**Never posts.** Doctrinal disputes, politics, judging others' choices, prosperity/money claims, guilt as a hook, crying-performance content (archetype 4 is off-limits here — it reads as manipulation).
+**Never posts.** Doctrinal disputes, politics, judging others' choices, prosperity/money claims, guilt as a hook, crying-performance content (archetype 4 is off-limits here, it reads as manipulation).
 **`--description`.** `gentle woman in her early 30s, shoulder-length natural hair, soft knit cardigan, calm warm expression, no makeup, natural skin texture, quiet grounded presence`
 
 ---
@@ -131,14 +131,14 @@ A pillar describes what the POST is about, not what the clip animates. The clip 
 | Twenty minutes to myself | Coffee, silence, nothing happening | porch / bathroom | 8 Deadpan Stare |
 | House reset | Tidying, before/after of a room | living room | 10 Speed-Shock |
 
-**Never posts.** Children's faces or names — keep kids implied, off-frame, or as a hand/toy only (AI cannot hold a child's identity consistently and it invites exactly the wrong scrutiny). Also: parenting advice as instruction, other-parent judgement, medical content.
+**Never posts.** Children's faces or names, keep kids implied, off-frame, or as a hand/toy only (AI cannot hold a child's identity consistently and it invites exactly the wrong scrutiny). Also: parenting advice as instruction, other-parent judgement, medical content.
 **`--description`.** `warm tired woman in her mid 30s, hair in a quick messy bun, oversized hoodie, kind humorous eyes, no makeup, natural skin texture, candid unposed energy`
 
 ---
 
 ## 7. Tech / apps
 
-**Persona.** 24–38, a tinkerer who tries things and reports back. Skeptical by default — the credibility comes from disliking most of what they test.
+**Persona.** 24–38, a tinkerer who tries things and reports back. Skeptical by default, the credibility comes from disliking most of what they test.
 **Aesthetic.** Desk with monitor glow, daylight-balanced, cables visible, no studio.
 **Settings.** Desk with monitors · sofa with a phone · cafe with a laptop · kitchen counter with a gadget box · car (phone mount).
 **Wardrobe.** Plain crew-neck · zip hoodie · one collared shirt for "serious" posts.

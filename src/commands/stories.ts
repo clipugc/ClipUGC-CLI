@@ -35,7 +35,7 @@ const EPISODE_COLUMNS = [
 
 function printScript(episode: StoryEpisode): void {
   logger.info('');
-  logger.info(`Episode ${episode.episode_number ?? '?'} — ${episode.title ?? 'Untitled'}`);
+  logger.info(`Episode ${episode.episode_number ?? '?'}: ${episode.title ?? 'Untitled'}`);
   (episode.script ?? []).forEach((scene, index) => {
     logger.info(`  Scene ${index + 1}: ${scene.action}`);
     if (scene.dialogue) logger.info(`    She says: "${scene.dialogue}"`);
@@ -102,7 +102,7 @@ export function registerStoriesCommands(program: Command): void {
 
   stories
     .command('draft <id>')
-    .description("Draft the next episode's script (free — nothing is generated yet)")
+    .description("Draft the next episode's script (free, nothing is generated yet)")
     .option('--minutes <n>', 'Episode length in minutes: 1, 2 or 5 (default 1)', (v: string) => Number.parseInt(v, 10))
     .option('--direction <text>', 'Write the plot yourself; omit to let the AI continue the story')
     .action(async (id: string, opts: { minutes?: number; direction?: string }, cmd: Command) => {

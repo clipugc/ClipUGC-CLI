@@ -310,8 +310,8 @@
     },
     {
       "name": "merge_ad",
-      "title": "Merge a clip into a UGC ad",
-      "description": "Merge a completed clip with an app screen recording and a hook text overlay (plus optional background music) into the final UGC ad. Same as `clipugc videos merge <clipId>`. The clip must have status \"completed\" (check with get_video). Merging is free at the time of writing; the live cost is the \"merge\" entry of get_credits. Files are uploaded first. Returns merged_video_id: the AD id, which is a different id space from the clip id. The merge renders in the background. Poll get_video with {\"id\": <merged_video_id>, \"kind\": \"ad\"} every 5 to 10 seconds until status is \"completed\" or \"failed\", then call download_video with kind \"ad\".",
+      "title": "Turn a clip into a finished UGC video",
+      "description": "Put an app screen recording and a hook text overlay (plus optional background music) into a completed clip to make the finished UGC video for the app. Same as `clipugc videos merge <clipId>`. The clip must have status \"completed\" (check with get_video). This step is free at the time of writing; the live cost is the \"merge\" entry of get_credits. Files are uploaded first. Returns merged_video_id: the finished video id, which is a different id space from the clip id. The finished video renders in the background. Poll get_video with {\"id\": <merged_video_id>, \"kind\": \"finished\"} every 5 to 10 seconds until status is \"completed\" or \"failed\", then call download_video with kind \"finished\".",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -354,21 +354,22 @@
     },
     {
       "name": "get_video",
-      "title": "Get clip or ad status",
-      "description": "Get the current status of a clip (kind \"clip\", default; same as `clipugc videos status <id>`) or of a merged ad (kind \"ad\"; same as `clipugc ads show <adId>`). This is the poll tool for create_clip, create_motion_clip and merge_ad. Status is pending, processing, completed or failed. A clip record also carries merge_status and merged_video_id once merged. Costs no credits.",
+      "title": "Get clip or finished video status",
+      "description": "Get the current status of a clip (kind \"clip\", default; same as `clipugc videos status <id>`) or of a finished video (kind \"finished\"; same as `clipugc finished show <videoId>`). This is the poll tool for create_clip, create_motion_clip and merge_ad. Status is pending, processing, completed or failed. A clip record also carries merge_status and merged_video_id once a finished video was made from it. Costs no credits.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "minLength": 1,
-            "description": "Clip or ad id, as returned by other tools (numbers are fine as strings)."
+            "description": "Clip or finished video id, as returned by other tools (numbers are fine as strings)."
           },
           "kind": {
-            "description": "\"clip\" (default) for a character video id, \"ad\" for a merged_video_id.",
+            "description": "\"clip\" (default) for a clip id, \"finished\" for a finished video id (merged_video_id).",
             "type": "string",
             "enum": [
               "clip",
+              "finished",
               "ad"
             ]
           }
@@ -388,26 +389,27 @@
     },
     {
       "name": "download_video",
-      "title": "Download a clip or ad",
-      "description": "Download a completed clip (kind \"clip\", default; same as `clipugc videos download <id>`) or a completed merged ad (kind \"ad\"; same as `clipugc ads download <adId>`) to a local mp4 file. Pass an absolute output path; missing parent directories are created. Costs no credits. Fails if the video has not completed yet.",
+      "title": "Download a clip or finished video",
+      "description": "Download a completed clip (kind \"clip\", default; same as `clipugc videos download <id>`) or a completed finished video (kind \"finished\"; same as `clipugc finished download <videoId>`) to a local mp4 file. Pass an absolute output path; missing parent directories are created. Costs no credits. Fails if the video has not completed yet.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "minLength": 1,
-            "description": "Clip or ad id, as returned by other tools (numbers are fine as strings)."
+            "description": "Clip or finished video id, as returned by other tools (numbers are fine as strings)."
           },
           "kind": {
-            "description": "\"clip\" (default) for a character video id, \"ad\" for a merged_video_id.",
+            "description": "\"clip\" (default) for a clip id, \"finished\" for a finished video id (merged_video_id).",
             "type": "string",
             "enum": [
               "clip",
+              "finished",
               "ad"
             ]
           },
           "output": {
-            "description": "Destination file path (same as --output). Default: clipugc-video-<id>.mp4 or clipugc-ad-<id>.mp4 in the server's working directory.",
+            "description": "Destination file path (same as --output). Default: clipugc-video-<id>.mp4 or clipugc-finished-<id>.mp4 in the server's working directory.",
             "type": "string"
           }
         },
@@ -446,7 +448,7 @@
     {
       "name": "list_hooks",
       "title": "Suggest hook texts",
-      "description": "Get AI-suggested hook texts (the short attention-grabbing line burned over a UGC ad). Same as `clipugc hooks suggest`. Pass context describing the app for tailored hooks. Pick one (max 150 chars) and pass it as hook to merge_ad. Costs no credits.",
+      "description": "Get AI-suggested hook texts (the short attention-grabbing line burned over a UGC video). Same as `clipugc hooks suggest`. Pass context describing the app for tailored hooks. Pick one (max 150 chars) and pass it as hook to merge_ad. Costs no credits.",
       "inputSchema": {
         "type": "object",
         "properties": {

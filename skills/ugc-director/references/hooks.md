@@ -1,13 +1,13 @@
 # Hook Text Library
 
-Hook = the on-screen text overlay burned into the final ad (`videos merge --hook "…"`, max 150 chars — but aim for ≤8 words; ≤5 words is best for the first frame).
+Hook = the on-screen text overlay burned into the finished video (`videos merge --hook "…"`, max 150 chars, but aim for ≤8 words; ≤5 words is best for the first frame).
 
 ## Rules
 
 - On screen at 0.0s. 2–5 words for the opening frame; 3–7 words per overlay line.
 - Write like a friend texting, not a brand. No "Introducing…", no "revolutionary", no exclamation-mark salvos.
 - Lowercase or sentence case reads more native than Title Case.
-- Fill `[app]` / `[problem]` / `[result]` with the user's app specifics — concrete numbers beat adjectives ("saved me 3 hours this week" > "so useful").
+- Fill `[app]` / `[problem]` / `[result]` with the user's app specifics, concrete numbers beat adjectives ("saved me 3 hours this week" > "so useful").
 - Pair the hook category with a matching reaction archetype (column 3; numbers refer to formats.md).
 
 ## Formulas by category
@@ -62,7 +62,7 @@ Hook = the on-screen text overlay burned into the final ad (`videos merge --hook
 
 ## Combining with `clipugc hooks suggest`
 
-`clipugc hooks suggest --context "<app description>"` returns 5 AI-generated hooks. Use them as raw material: keep the ones that match a formula above, rewrite the rest into a formula, then pick the archetype from the category mapping. Generate 2–3 hook variants per clip — hooks are the cheapest thing to A/B (re-merging the same clip is free).
+`clipugc hooks suggest --context "<app description>"` returns 5 AI-generated hooks. Use them as raw material: keep the ones that match a formula above, rewrite the rest into a formula, then pick the archetype from the category mapping. Generate 2–3 hook variants per clip, hooks are the cheapest thing to A/B (a new hook on the same clip is free).
 
 ## CTA lines (final overlay, last 2–3s)
 

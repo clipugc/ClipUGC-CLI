@@ -3,12 +3,12 @@
   "name": "clipugc",
   "display_name": "ClipUGC",
   "version": "1.3.1",
-  "description": "Create AI influencer characters, looks, video clips and merged UGC app ads with ClipUGC.",
-  "long_description": "ClipUGC makes UGC-style ads for mobile apps with AI creators. This extension gives Claude Desktop the same tools as the `clipugc` command line: create an AI character, generate more looks of the same face, animate a look into a short silent-reaction clip, merge your app screen recording under a hook text, and download the finished ad.\n\nYou need a ClipUGC account on a paid plan and an API key from https://clipugc.com/dashboard (API Keys). Generation spends credits from your ClipUGC balance; the `get_credits` tool shows the balance and the live cost of each action.",
+  "description": "Create AI influencer characters, looks, video clips and finished UGC videos for your app with ClipUGC.",
+  "long_description": "ClipUGC makes UGC videos for mobile apps with AI influencers. This extension gives Claude Desktop the same tools as the `clipugc` command line: create an AI character, generate more looks of the same face, animate a look into a short silent-reaction clip, add your app screen recording and a hook text, and download the finished video.\n\nYou need a ClipUGC account on a paid plan and an API key from https://clipugc.com/dashboard (API Keys). Generation spends credits from your ClipUGC balance; the `get_credits` tool shows the balance and the live cost of each action.",
   "author": {
     "name": "ClipUGC",
     "email": "clipugc@gmail.com",
-    "url": "https://clipugc.com"
+    "url": "https://github.com/clipugc"
   },
   "repository": {
     "type": "git",
@@ -68,15 +68,15 @@
     },
     {
       "name": "merge_ad",
-      "description": "Merge a finished clip with your app screen recording and a hook text into a UGC ad. Free at the moment; get_credits shows the live cost."
+      "description": "Put your app screen recording and a hook text into a finished clip to make the UGC video for your app. Free at the moment; get_credits shows the live cost."
     },
     {
       "name": "get_video",
-      "description": "Get the status of a clip or a merged ad. Use it to poll until generation completes. Costs no credits."
+      "description": "Get the status of a clip or a finished video. Use it to poll until generation completes. Costs no credits."
     },
     {
       "name": "download_video",
-      "description": "Download a completed clip or ad to a local mp4 file. Costs no credits."
+      "description": "Download a completed clip or finished video to a local mp4 file. Costs no credits."
     },
     {
       "name": "get_credits",
@@ -84,7 +84,7 @@
     },
     {
       "name": "list_hooks",
-      "description": "Suggest hook texts for an ad based on a short description of your app. Costs no credits."
+      "description": "Suggest hook texts for a UGC video based on a short description of your app. Costs no credits."
     }
   ],
   "keywords": [
@@ -93,7 +93,7 @@
     "ai-video",
     "video-generation",
     "ai-influencer",
-    "mobile-app-ads",
+    "mobile-app-marketing",
     "cli"
   ],
   "license": "MIT",

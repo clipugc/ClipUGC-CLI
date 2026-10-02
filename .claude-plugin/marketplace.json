@@ -8,7 +8,7 @@
     {
       "name": "clipugc",
       "source": "./",
-      "description": "ClipUGC skills for Claude Code — ugc-director (turn an app idea into a TikTok-style ad plan: reaction archetypes, hooks, casting, prompts) + the clipugc CLI: create AI characters, generate looks, produce video clips, merge app recordings into UGC ads, and manage credits from natural language. New: story-runner — ongoing story series where an AI character lives a continuing life in short talking episodes, each picking up from the previous episode’s last frame."
+      "description": "ClipUGC skills for Claude Code: ugc-director (turn an app idea into a TikTok-style UGC video plan: reaction archetypes, hooks, casting, prompts) + the clipugc CLI: create AI characters, generate looks, produce video clips, add app recordings to make finished UGC videos, and manage credits from natural language. New: story-runner, ongoing story series where an AI character lives a continuing life in short talking episodes, each picking up from the previous episode’s last frame."
     }
   ]
 }

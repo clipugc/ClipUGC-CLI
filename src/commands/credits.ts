@@ -15,7 +15,7 @@ const COST_LABELS: Record<string, string> = {
   clip_10s: 'clip (10s)',
   motion_per_second: 'motion control (per second)',
   scene_staged: 'scene-staged clip',
-  merge: 'merge',
+  merge: 'finished video',
 };
 
 /** Preferred display order for known cost keys; unknown keys follow, sorted. */

@@ -220,7 +220,7 @@ export function validateCharacterAge(age: number): number {
 function applyMakeVideo(payload: Record<string, unknown>, input: CreateCharacterInput): void {
   const motion = input.motionPrompt?.trim();
   if (motion && !input.makeVideo) {
-    throw new ValidationError('--motion-prompt only applies when staging a first clip — add --make-video.');
+    throw new ValidationError('--motion-prompt only applies when staging a first clip. Add --make-video.');
   }
   if (input.makeVideo) {
     payload.make_video = true;

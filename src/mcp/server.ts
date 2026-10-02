@@ -21,11 +21,11 @@ export function createMcpServer(): McpServer {
     { name: MCP_SERVER_NAME, version: getVersion() },
     {
       instructions:
-        'ClipUGC makes AI influencer style UGC ads for mobile apps. Pipeline: create_character (2 credits) -> ' +
-        'generate_image for more looks of the same face (2 each) -> create_clip (7 for 5s, 13 for 10s) or create_motion_clip ' +
-        '(3 per driver second) -> merge_ad with the app screen recording and a hook -> download_video. Generation tools return ' +
-        'immediately; poll get_video (clips and ads) or list_images (looks) until status is completed. Call get_credits before ' +
-        'spending. Clip ids and ad ids (merged_video_id) are different id spaces.',
+        'ClipUGC makes AI influencer UGC videos for apps. Pipeline: create_character (2 credits) -> ' +
+        'generate_image for more looks of the same face (2 each) -> create_clip (7 for 5 s, 13 for 10 s) or create_motion_clip ' +
+        '(3 per driver second) -> merge_ad to put the app screen recording and a hook into the clip -> download_video. ' +
+        'Generation tools return immediately; poll get_video (clips and finished videos) or list_images (looks) until status ' +
+        'is completed. Call get_credits before spending. Clip ids and finished video ids (merged_video_id) are different id spaces.',
     },
   );
 

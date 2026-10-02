@@ -41,7 +41,7 @@ export async function waitForMerge<T extends MergeStatusCheck>(
 ): Promise<T> {
   const intervalMs = options.intervalMs ?? 6000;
   const timeoutMs = options.timeoutMs ?? 20 * 60 * 1000;
-  const label = options.label ?? 'Merging video';
+  const label = options.label ?? 'Rendering video';
   const start = Date.now();
   const spinner = options.quiet ? null : ora(`${label}...`).start();
 
@@ -58,11 +58,11 @@ export async function waitForMerge<T extends MergeStatusCheck>(
       }
       if (failed) {
         spinner?.fail(`${label} failed.`);
-        throw new ApiError(`${label} failed. Retry with \`clipugc ads retry\` — merging is free.`);
+        throw new ApiError(`${label} failed. Retry with \`clipugc finished retry <videoId>\`. It is free.`);
       }
       if (Date.now() - start > timeoutMs) {
-        spinner?.fail(`${label} timed out after ${formatElapsed(elapsed)} — it may still finish server-side.`);
-        throw new ApiError(`${label} timed out. Check \`clipugc ads show <adId>\` later.`);
+        spinner?.fail(`${label} timed out after ${formatElapsed(elapsed)}. It may still finish server-side.`);
+        throw new ApiError(`${label} timed out. Check \`clipugc finished show <videoId>\` later.`);
       }
       if (spinner) {
         spinner.text = `${label}... ${chalk.dim(`(${result.status ?? 'processing'}, ${formatElapsed(elapsed)} elapsed)`)}`;
@@ -108,7 +108,7 @@ export async function waitForCompletion<T extends StatusCheck>(
       }
 
       if (Date.now() - start > timeoutMs) {
-        spinner?.fail(`${label} timed out after ${formatElapsed(elapsed)} — it may still finish server-side.`);
+        spinner?.fail(`${label} timed out after ${formatElapsed(elapsed)}. It may still finish server-side.`);
         throw new ApiError(`${label} timed out after ${formatElapsed(elapsed)}. Check status later.`);
       }
 

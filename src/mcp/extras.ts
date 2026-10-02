@@ -23,10 +23,11 @@ export const PIPELINE_GUIDE = `ClipUGC pipeline for one UGC video
 4. create_clip with the completed image id, a prompt for what she says or does, and
    duration 5 or 10. Poll get_video with the returned id until status is completed.
 5. Optional: merge_ad with the clip id, the path to the app screen recording and a hook
-   line (list_hooks suggests some). Poll get_video with kind "ad" and the merged_video_id.
-6. download_video with the id (kind "clip" or "ad") and an output path.
+   line (list_hooks suggests some) to make the finished video. Poll get_video with kind
+   "finished" and the merged_video_id.
+6. download_video with the id (kind "clip" or "finished") and an output path.
 
-Ids: clip ids and merged video ids are separate id spaces. Generation tools return right
+Ids: clip ids and finished video ids are separate id spaces. Generation tools return right
 away; nothing blocks. A failed job refunds exactly what it charged.`;
 
 export const PRICING_NOTES = `ClipUGC credit costs (documented defaults; get_credits returns the live table)
@@ -36,7 +37,7 @@ clip, 5 seconds: 7
 clip, 10 seconds: 13
 clip with a scene (character staged in a place first): 9 for 5 seconds, 15 for 10 seconds
 motion clip: 3 per second of the driver video, capped at 30 seconds
-merge (app recording plus hook on a finished clip): free
+finished video (app recording plus hook on a clip, the "merge" entry): free
 listing, status, download and hook suggestions: free
 
 Plans: Professional is 150 credits a month for $14.99, about 11 ten-second videos.

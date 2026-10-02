@@ -18,7 +18,7 @@ export function createCli(): Command {
   program
     .name('clipugc')
     .description(
-      'ClipUGC CLI — create AI characters, generate looks, and produce UGC-style videos for your mobile app.\n' +
+      'ClipUGC CLI: create AI characters, generate looks, and produce UGC-style videos for your mobile app.\n' +
       'Get an API key from your dashboard at https://clipugc.com, then run `clipugc auth login`.',
     )
     .version(getVersion(), '-v, --version', 'Print the CLI version')

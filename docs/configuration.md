@@ -25,7 +25,7 @@ Env vars override the config file:
 
 ## JSON output
 
-Every command accepts the global `--json` flag to print raw JSON instead of formatted output — use it for scripting and to capture ids:
+Every command accepts the global `--json` flag to print raw JSON instead of formatted output, use it for scripting and to capture ids:
 
 ```bash
 clipugc characters list --mine --json
@@ -33,7 +33,7 @@ clipugc characters list --mine --json
 
 ## Waiting on long-running jobs
 
-Generation commands (`images generate`, `images variation`, `images retry`, `videos create`, `videos motion`, `videos merge`, `videos retry`, `ads retry`) accept `--wait` to poll with a spinner until the job is `completed` or `failed`. Without `--wait`, the command returns immediately and you can poll with `images status <id>` / `videos status <id>` / `ads show <adId>`.
+Generation commands (`images generate`, `images variation`, `images retry`, `videos create`, `videos motion`, `videos merge`, `videos retry`, `finished retry`) accept `--wait` to poll with a spinner until the job is `completed` or `failed`. Without `--wait`, the command returns immediately and you can poll with `images status <id>` / `videos status <id>` / `finished show <videoId>`.
 
 ## Exit codes
 

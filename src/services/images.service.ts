@@ -161,7 +161,7 @@ export async function downloadImage(id: string, opts: { output?: string; quiet?:
   const image = await getImage(id);
   const url = findImageUrl(image);
   if (!url) {
-    throw new ValidationError(`Look ${id} has no image yet — check \`clipugc images status ${id}\`.`);
+    throw new ValidationError(`Look ${id} has no image yet. Check \`clipugc images status ${id}\`.`);
   }
 
   const extension = /\.(png|jpe?g|webp)(\?|$)/i.exec(url)?.[1]?.toLowerCase() ?? 'png';
@@ -176,7 +176,7 @@ export async function downloadImage(id: string, opts: { output?: string; quiet?:
     throw new NetworkError(`Download failed: ${reason}`);
   }
   if (!response.ok) {
-    throw new NetworkError(`Download failed (HTTP ${response.status}). The link may have expired — try again.`);
+    throw new NetworkError(`Download failed (HTTP ${response.status}). The link may have expired. Try again.`);
   }
 
   const fs = (await import('fs-extra')).default;

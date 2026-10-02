@@ -100,8 +100,8 @@ export async function downloadMergedVideo(
   const url = data?.download_url;
   if (!url) {
     throw new ApiError(
-      `The API did not return a download URL for ad ${id}. Has the merge finished? Check \`clipugc ads show ${id}\`.`,
+      `The API did not return a download URL for finished video ${id}. Is it ready? Check \`clipugc finished show ${id}\`.`,
     );
   }
-  return saveUrlToFile(url, opts.output || `clipugc-ad-${id}.mp4`, Boolean(opts.quiet));
+  return saveUrlToFile(url, opts.output || `clipugc-finished-${id}.mp4`, Boolean(opts.quiet));
 }

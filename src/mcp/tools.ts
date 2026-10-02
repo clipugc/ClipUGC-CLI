@@ -6,7 +6,7 @@
  * onto the service call the CLI command would make, and formats the result as JSON text.
  * No HTTP happens here; the services own the endpoints.
  *
- * Long-running actions (images, clips, merges) return the job id right away, the same way
+ * Long-running actions (images, clips, finished videos) return the job id right away, the same way
  * the CLI behaves without --wait. The caller polls with get_video / list_images.
  *
  * Nothing in this file may write to stdout: stdout is the MCP transport.
@@ -81,9 +81,22 @@ const POLL_CLIP =
   'Generation runs in the background. Poll get_video with {"id": <clip id>, "kind": "clip"} every 5 to 10 seconds ' +
   'until status is "completed" or "failed", then call download_video.';
 
-const POLL_AD =
-  'The merge renders in the background. Poll get_video with {"id": <merged_video_id>, "kind": "ad"} every 5 to 10 seconds ' +
-  'until status is "completed" or "failed", then call download_video with kind "ad".';
+const POLL_FINISHED =
+  'The finished video renders in the background. Poll get_video with {"id": <merged_video_id>, "kind": "finished"} every 5 to 10 ' +
+  'seconds until status is "completed" or "failed", then call download_video with kind "finished".';
+
+/**
+ * get_video / download_video `kind`. "finished" addresses a finished video (merged_video_id).
+ * "ad" is the pre-1.3.1 name for the same thing, still accepted so existing callers keep working.
+ */
+const KIND_FIELD = z
+  .enum(['clip', 'finished', 'ad'])
+  .optional()
+  .describe('"clip" (default) for a clip id, "finished" for a finished video id (merged_video_id).');
+
+function isFinishedKind(kind: 'clip' | 'finished' | 'ad' | undefined): boolean {
+  return kind === 'finished' || kind === 'ad';
+}
 
 const POLL_IMAGE =
   'Looks generate in the background. Poll list_images with the same character id every 5 to 10 seconds until each ' +
@@ -318,12 +331,13 @@ export const TOOLS: readonly ToolDefinition[] = [
 
   define({
     name: 'merge_ad',
-    title: 'Merge a clip into a UGC ad',
+    title: 'Turn a clip into a finished UGC video',
     description:
-      'Merge a completed clip with an app screen recording and a hook text overlay (plus optional background music) into the ' +
-      'final UGC ad. Same as `clipugc videos merge <clipId>`. The clip must have status "completed" (check with get_video). ' +
-      'Merging is free at the time of writing; the live cost is the "merge" entry of get_credits. Files are uploaded first. ' +
-      'Returns merged_video_id: the AD id, which is a different id space from the clip id. ' + POLL_AD,
+      'Put an app screen recording and a hook text overlay (plus optional background music) into a completed clip to make the ' +
+      'finished UGC video for the app. Same as `clipugc videos merge <clipId>`. The clip must have status "completed" (check ' +
+      'with get_video). This step is free at the time of writing; the live cost is the "merge" entry of get_credits. Files are ' +
+      'uploaded first. Returns merged_video_id: the finished video id, which is a different id space from the clip id. ' +
+      POLL_FINISHED,
     inputSchema: {
       video: idField('Clip (character video)'),
       app_video: z.string().min(1).describe('Local path of the app screen recording, mp4/mov (same as --app-video).'),
@@ -343,38 +357,38 @@ export const TOOLS: readonly ToolDefinition[] = [
         merge_status: clip.merge_status ?? 'pending',
         clip,
         next: mergedVideoId !== null
-          ? POLL_AD
-          : 'The merge was accepted but no merged_video_id came back. List the ads with `clipugc ads list` to find it.',
+          ? POLL_FINISHED
+          : 'The request was accepted but no merged_video_id came back. List finished videos with `clipugc finished list` to find it.',
       };
     },
   }),
 
   define({
     name: 'get_video',
-    title: 'Get clip or ad status',
+    title: 'Get clip or finished video status',
     description:
-      'Get the current status of a clip (kind "clip", default; same as `clipugc videos status <id>`) or of a merged ad ' +
-      '(kind "ad"; same as `clipugc ads show <adId>`). This is the poll tool for create_clip, create_motion_clip and merge_ad. ' +
-      'Status is pending, processing, completed or failed. A clip record also carries merge_status and merged_video_id once merged. ' +
-      'Costs no credits.',
+      'Get the current status of a clip (kind "clip", default; same as `clipugc videos status <id>`) or of a finished video ' +
+      '(kind "finished"; same as `clipugc finished show <videoId>`). This is the poll tool for create_clip, create_motion_clip ' +
+      'and merge_ad. Status is pending, processing, completed or failed. A clip record also carries merge_status and ' +
+      'merged_video_id once a finished video was made from it. Costs no credits.',
     inputSchema: {
-      id: idField('Clip or ad'),
-      kind: z.enum(['clip', 'ad']).optional().describe('"clip" (default) for a character video id, "ad" for a merged_video_id.'),
+      id: idField('Clip or finished video'),
+      kind: KIND_FIELD,
     },
     annotations: { readOnlyHint: true, openWorldHint: true },
     handler: async (args) => {
       const api = await createApiClient();
-      if (args.kind === 'ad') {
-        const ad = await ads.getMergedVideo(api, args.id);
+      if (isFinishedKind(args.kind)) {
+        const finished = await ads.getMergedVideo(api, args.id);
         return {
-          kind: 'ad',
-          id: ad.id,
-          status: ad.status,
-          ad,
-          next: ad.status === 'completed'
-            ? `Download it with download_video {"id": "${ad.id}", "kind": "ad"}.`
-            : ad.status === 'failed'
-              ? (ad.can_retry ? 'Re-render it with `clipugc ads retry <adId>` (free).' : 'Run merge_ad again with the app recording.')
+          kind: args.kind,
+          id: finished.id,
+          status: finished.status,
+          ad: finished, // output key kept for existing callers
+          next: finished.status === 'completed'
+            ? `Download it with download_video {"id": "${finished.id}", "kind": "finished"}.`
+            : finished.status === 'failed'
+              ? (finished.can_retry ? `Re-render it with \`clipugc finished retry ${finished.id}\` (free).` : 'Run merge_ad again with the app recording.')
               : 'Still rendering. Poll again in 5 to 10 seconds.',
         };
       }
@@ -385,7 +399,7 @@ export const TOOLS: readonly ToolDefinition[] = [
         status: check.status,
         check,
         next: check.status === 'completed'
-          ? `Download it with download_video {"id": "${args.id}"} or merge it with merge_ad.`
+          ? `Download it with download_video {"id": "${args.id}"} or turn it into a finished video with merge_ad.`
           : check.status === 'failed'
             ? `Generation failed${check.failure_reason || check.error_message ? `: ${check.failure_reason || check.error_message}` : ''}. Retry with \`clipugc videos retry ${args.id}\`.`
             : 'Still generating. Poll again in 5 to 10 seconds.',
@@ -395,20 +409,20 @@ export const TOOLS: readonly ToolDefinition[] = [
 
   define({
     name: 'download_video',
-    title: 'Download a clip or ad',
+    title: 'Download a clip or finished video',
     description:
-      'Download a completed clip (kind "clip", default; same as `clipugc videos download <id>`) or a completed merged ad ' +
-      '(kind "ad"; same as `clipugc ads download <adId>`) to a local mp4 file. Pass an absolute output path; missing parent ' +
+      'Download a completed clip (kind "clip", default; same as `clipugc videos download <id>`) or a completed finished video ' +
+      '(kind "finished"; same as `clipugc finished download <videoId>`) to a local mp4 file. Pass an absolute output path; missing parent ' +
       'directories are created. Costs no credits. Fails if the video has not completed yet.',
     inputSchema: {
-      id: idField('Clip or ad'),
-      kind: z.enum(['clip', 'ad']).optional().describe('"clip" (default) for a character video id, "ad" for a merged_video_id.'),
-      output: z.string().optional().describe('Destination file path (same as --output). Default: clipugc-video-<id>.mp4 or clipugc-ad-<id>.mp4 in the server\'s working directory.'),
+      id: idField('Clip or finished video'),
+      kind: KIND_FIELD,
+      output: z.string().optional().describe('Destination file path (same as --output). Default: clipugc-video-<id>.mp4 or clipugc-finished-<id>.mp4 in the server\'s working directory.'),
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     handler: async (args) => {
       const api = await createApiClient();
-      const dest = args.kind === 'ad'
+      const dest = isFinishedKind(args.kind)
         ? await ads.downloadMergedVideo(api, args.id, { output: args.output, quiet: true })
         : await videos.downloadVideo(api, args.id, { output: args.output, quiet: true });
       return { kind: args.kind ?? 'clip', id: args.id, output: path.resolve(dest) };
@@ -435,7 +449,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     name: 'list_hooks',
     title: 'Suggest hook texts',
     description:
-      'Get AI-suggested hook texts (the short attention-grabbing line burned over a UGC ad). Same as `clipugc hooks suggest`. ' +
+      'Get AI-suggested hook texts (the short attention-grabbing line burned over a UGC video). Same as `clipugc hooks suggest`. ' +
       'Pass context describing the app for tailored hooks. Pick one (max 150 chars) and pass it as hook to merge_ad. ' +
       'Costs no credits.',
     inputSchema: {

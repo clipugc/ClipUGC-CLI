@@ -308,7 +308,7 @@ describe('create_motion_clip', () => {
 });
 
 describe('merge_ad', () => {
-  it('uploads app video (and music), merges, and returns the AD id with the kind:"ad" poll hint', async () => {
+  it('uploads app video (and music), merges, and returns the finished video id with the kind:"finished" poll hint', async () => {
     vi.mocked(uploads.uploadFile).mockResolvedValueOnce('uploads/app.mp4').mockResolvedValueOnce('uploads/music.mp3');
     vi.mocked(videos.mergeVideo).mockResolvedValue({ id: 91, status: 'completed', merge_status: 'processing', merged_video_id: 121 });
     const { data } = await call('merge_ad', { video: '91', app_video: '/tmp/app.mp4', hook: 'nobody talks about this app', music: '/tmp/m.mp3' });
@@ -321,7 +321,7 @@ describe('merge_ad', () => {
     });
     expect(data.merged_video_id).toBe(121);
     expect(data.clip_id).toBe(91);
-    expect(String(data.next)).toContain('"kind": "ad"');
+    expect(String(data.next)).toContain('"kind": "finished"');
   });
 
   it('rejects a hook over 150 chars before uploading anything', async () => {
@@ -349,7 +349,16 @@ describe('get_video', () => {
     expect(String(data.next)).toContain('provider timeout');
   });
 
-  it('polls a merged ad when kind is "ad"', async () => {
+  it('polls a finished video when kind is "finished"', async () => {
+    vi.mocked(ads.getMergedVideo).mockResolvedValue({ id: 121, status: 'completed' });
+    const { data } = await call('get_video', { id: '121', kind: 'finished' });
+    expect(ads.getMergedVideo).toHaveBeenCalledWith(FAKE_API, '121');
+    expect(videos.checkVideoStatus).not.toHaveBeenCalled();
+    expect(data.kind).toBe('finished');
+    expect(String(data.next)).toContain('"kind": "finished"');
+  });
+
+  it('still accepts the legacy kind "ad"', async () => {
     vi.mocked(ads.getMergedVideo).mockResolvedValue({ id: 121, status: 'processing' });
     const { data } = await call('get_video', { id: '121', kind: 'ad' });
     expect(ads.getMergedVideo).toHaveBeenCalledWith(FAKE_API, '121');
@@ -368,7 +377,15 @@ describe('download_video', () => {
     expect(data.kind).toBe('clip');
   });
 
-  it('downloads an ad via the merged-videos service when kind is "ad"', async () => {
+  it('downloads a finished video via the merged-videos service when kind is "finished"', async () => {
+    vi.mocked(ads.downloadMergedVideo).mockResolvedValue('clipugc-finished-121.mp4');
+    const { data } = await call('download_video', { id: '121', kind: 'finished' });
+    expect(ads.downloadMergedVideo).toHaveBeenCalledWith(FAKE_API, '121', { output: undefined, quiet: true });
+    expect(videos.downloadVideo).not.toHaveBeenCalled();
+    expect(String(data.output).endsWith('clipugc-finished-121.mp4')).toBe(true);
+  });
+
+  it('still downloads a finished video when given the legacy kind "ad"', async () => {
     vi.mocked(ads.downloadMergedVideo).mockResolvedValue('clipugc-ad-121.mp4');
     const { data } = await call('download_video', { id: '121', kind: 'ad' });
     expect(ads.downloadMergedVideo).toHaveBeenCalledWith(FAKE_API, '121', { output: undefined, quiet: true });

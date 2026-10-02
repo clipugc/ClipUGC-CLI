@@ -24,9 +24,9 @@ function parsePositiveInt(flag: string) {
   };
 }
 
-/** Shared table shape for a list of ads. */
+/** Shared table shape for a list of finished videos. */
 export const AD_COLUMNS = [
-  { header: 'AD ID', value: (a: MergedVideo) => a.id },
+  { header: 'VIDEO ID', value: (a: MergedVideo) => a.id },
   { header: 'Status', value: (a: MergedVideo) => formatStatus(a.status ?? '') },
   { header: 'Hook', value: (a: MergedVideo) => truncate(a.hook_text) },
   { header: 'Clip', value: (a: MergedVideo) => a.character_video_id },
@@ -38,21 +38,38 @@ function truncate(text: string | null | undefined, max = 40): string | undefined
   return text.length > max ? `${text.slice(0, max - 1)}…` : text;
 }
 
+/** Primary name of the finished-video command group. */
+export const FINISHED_COMMAND = 'finished';
+
+/** Pre-1.3.1 name of the same group. Still registered (hidden) so existing scripts keep working. */
+export const LEGACY_FINISHED_COMMAND = 'ads';
+
 /**
- * `clipugc ads` — finished UGC ads (`/merged-videos`), the resource a merge produces.
+ * `clipugc finished`: finished UGC videos (`/merged-videos`), what `videos merge` produces.
  *
- * An AD ID is NOT a clip id: `ads download 121` and `videos download 121` address different
- * things. `videos merge <clipId>` reports the ad id it created; `videos list --finals` lists ads.
+ * A finished video id is NOT a clip id: `finished download 121` and `videos download 121`
+ * address different things. `videos merge <clipId>` reports the id it created;
+ * `videos list --finals` lists finished videos too.
+ *
+ * The same subcommands are also registered under the hidden `ads` name for backward
+ * compatibility. JSON output is identical under both names.
  */
 export function registerAdsCommands(program: Command): void {
-  const ads = program
-    .command('ads')
-    .description('Manage your finished UGC ads (the output of `videos merge`)');
+  addFinishedCommands(
+    program.command(FINISHED_COMMAND).description('Manage your finished UGC videos (what `videos merge` makes)'),
+  );
+  addFinishedCommands(
+    program
+      .command(LEGACY_FINISHED_COMMAND, { hidden: true })
+      .description('Old name for `clipugc finished`, kept so existing scripts keep working'),
+  );
+}
 
-  ads
+function addFinishedCommands(group: Command): void {
+  group
     .command('list')
-    .description('List your finished UGC ads')
-    .option('--status <status>', 'Filter by merge status: pending, processing, completed, failed')
+    .description('List your finished UGC videos')
+    .option('--status <status>', 'Filter by status: pending, processing, completed, failed')
     .option('--page <n>', 'Page number', parsePositiveInt('--page'))
     .option('--per-page <n>', 'Results per page (max 50)', parsePositiveInt('--per-page'))
     .action(async (opts: { status?: string; page?: number; perPage?: number }, cmd: Command) => {
@@ -71,94 +88,95 @@ export function registerAdsCommands(program: Command): void {
       printPagination(pagination);
     });
 
-  ads
-    .command('show <adId>')
-    .description('Show details of a finished UGC ad')
-    .action(async (adId: string, _opts: Record<string, unknown>, cmd: Command) => {
+  group
+    .command('show <videoId>')
+    .alias('get')
+    .description('Show details of a finished UGC video')
+    .action(async (videoId: string, _opts: Record<string, unknown>, cmd: Command) => {
       const json = isJsonMode(cmd);
       const api = await createApiClient();
-      const ad = await getMergedVideo(api, adId);
+      const video = await getMergedVideo(api, videoId);
       if (json) {
-        printJson(ad);
+        printJson(video);
         return;
       }
-      logger.plain(`Ad ${ad.id}`);
-      logger.kv('status', formatStatus(ad.status ?? ''));
-      for (const [key, value] of Object.entries(ad)) {
+      logger.plain(`Finished video ${video.id}`);
+      logger.kv('status', formatStatus(video.status ?? ''));
+      for (const [key, value] of Object.entries(video)) {
         if (key === 'id' || key === 'status') continue;
         if (value === null || ['string', 'number', 'boolean'].includes(typeof value)) {
           logger.kv(key, value as string | number | boolean | null);
         }
       }
-      if (ad.status === 'completed') {
-        logger.hint(`Download it with \`clipugc ads download ${ad.id}\``);
+      if (video.status === 'completed') {
+        logger.hint(`Download it with \`clipugc finished download ${video.id}\``);
       }
-      if (ad.status === 'failed') {
-        if (ad.can_retry) {
-          logger.hint(`Re-render it with \`clipugc ads retry ${ad.id}\` — merging is free`);
+      if (video.status === 'failed') {
+        if (video.can_retry) {
+          logger.hint(`Render it again with \`clipugc finished retry ${video.id}\`. It is free.`);
         } else {
-          logger.warn('This ad cannot be re-rendered — its app recording is no longer stored. Run `clipugc videos merge` again.');
+          logger.warn('This video cannot be rendered again because its app recording is no longer stored. Run `clipugc videos merge` again.');
         }
       }
     });
 
-  ads
-    .command('download <adId>')
-    .description('Download a finished UGC ad to disk')
-    .option('-o, --output <file>', 'Destination file (default: clipugc-ad-<adId>.mp4)')
-    .action(async (adId: string, opts: { output?: string }, cmd: Command) => {
+  group
+    .command('download <videoId>')
+    .description('Download a finished UGC video to disk')
+    .option('-o, --output <file>', 'Destination file (default: clipugc-finished-<videoId>.mp4)')
+    .action(async (videoId: string, opts: { output?: string }, cmd: Command) => {
       const json = isJsonMode(cmd);
       const api = await createApiClient();
-      const dest = await downloadMergedVideo(api, adId, { output: opts.output, quiet: json });
+      const dest = await downloadMergedVideo(api, videoId, { output: opts.output, quiet: json });
       if (json) {
-        printJson({ merged_video_id: adId, output: dest });
+        printJson({ merged_video_id: videoId, output: dest });
       }
     });
 
-  ads
-    .command('retry <adId>')
-    .description('Re-render a failed UGC ad. Merging is free')
-    .option('--wait', 'Wait until the merge completes')
-    .action(async (adId: string, opts: { wait?: boolean }, cmd: Command) => {
+  group
+    .command('retry <videoId>')
+    .description('Render a failed finished video again. Free')
+    .option('--wait', 'Wait until the video is ready')
+    .action(async (videoId: string, opts: { wait?: boolean }, cmd: Command) => {
       const json = isJsonMode(cmd);
       const api = await createApiClient();
-      const ad = await retryMergedVideo(api, adId);
+      const video = await retryMergedVideo(api, videoId);
 
       if (opts.wait) {
-        const final = await waitForMerge(() => getMergedVideo(api, adId), { label: 'Merging ad', quiet: json });
+        const final = await waitForMerge(() => getMergedVideo(api, videoId), { label: 'Rendering video', quiet: json });
         if (json) {
           printJson(final);
         } else {
-          logger.hint(`Download the finished ad with \`clipugc ads download ${adId}\``);
+          logger.hint(`Download it with \`clipugc finished download ${videoId}\``);
         }
         return;
       }
       if (json) {
-        printJson(ad);
+        printJson(video);
         return;
       }
-      logger.success(`Re-render queued (ad ${adId}).`);
-      logger.hint(`Check it with \`clipugc ads show ${adId}\` — or re-run with --wait.`);
+      logger.success(`Render queued (finished video ${videoId}).`);
+      logger.hint(`Check it with \`clipugc finished show ${videoId}\`, or re-run with --wait.`);
     });
 
-  ads
-    .command('delete <adId>')
-    .description('Delete a finished UGC ad. The clip it was made from stays on the influencer profile')
+  group
+    .command('delete <videoId>')
+    .description('Delete a finished UGC video. The clip it was made from stays on the influencer profile')
     .option('-y, --yes', 'Skip the confirmation prompt')
-    .action(async (adId: string, opts: { yes?: boolean }, cmd: Command) => {
+    .action(async (videoId: string, opts: { yes?: boolean }, cmd: Command) => {
       const json = isJsonMode(cmd);
       if (!opts.yes) {
         const ok = await confirm(
-          `Delete ad ${adId}? This removes only the finished ad — the source clip stays. This cannot be undone.`,
+          `Delete finished video ${videoId}? Only the finished video goes; the source clip stays. This cannot be undone.`,
         );
         if (!ok) throw new AbortedError();
       }
       const api = await createApiClient();
-      const { data, message } = await deleteMergedVideo(api, adId);
+      const { data, message } = await deleteMergedVideo(api, videoId);
       if (json) {
         printJson(data);
         return;
       }
-      logger.success(message ?? `Ad ${adId} deleted.`);
+      logger.success(message ?? `Finished video ${videoId} deleted.`);
     });
 }

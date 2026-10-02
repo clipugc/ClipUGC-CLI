@@ -20,7 +20,7 @@ export async function saveUrlToFile(url: string, dest: string, quiet = false): P
       throw new NetworkError(`Download failed: ${reason}`);
     }
     if (!response.ok) {
-      throw new NetworkError(`Download failed (HTTP ${response.status}). The link may have expired — try again.`);
+      throw new NetworkError(`Download failed (HTTP ${response.status}). The link may have expired. Try again.`);
     }
     const bytes = Buffer.from(await response.arrayBuffer());
     const dir = path.dirname(dest);

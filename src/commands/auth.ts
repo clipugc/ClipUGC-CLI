@@ -137,7 +137,7 @@ export function registerAuthCommands(program: Command): void {
       if (authenticated) {
         logger.success(`authenticated as ${email ?? 'unknown user'}`);
       } else {
-        logger.warn('key invalid — run `clipugc auth login` with a fresh key');
+        logger.warn('key invalid, run `clipugc auth login` with a fresh key');
       }
     });
 

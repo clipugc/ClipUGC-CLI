@@ -15,7 +15,7 @@ episode's first scene starts on the previous episode's exact last frame.
 Never approve an episode without showing the user the script first.
 
 Stories are part of the Business plan. On other plans the server rejects `stories create`
-and `stories draft` with a clear message — relay it and point the user at the upgrade
+and `stories draft` with a clear message, relay it and point the user at the upgrade
 page (https://clipugc.com/#pricing) instead of retrying.
 
 ## Commands
@@ -36,7 +36,7 @@ only on approve, and refunded automatically if generation fails.
 
 ## Writing a good premise
 
-The premise drives every episode's script — invest in it. Good premises give the character
+The premise drives every episode's script, invest in it. Good premises give the character
 a life with built-in tension and recurring settings, e.g.:
 - "A 22-year-old founder in Copenhagen juggling 6am gym sessions, fashion, and pitching
   investors for her first raise."
@@ -46,9 +46,9 @@ Add `--tone` for delivery ("dry humor, a little teasing, cliffhanger endings").
 
 ## AI plot vs user plot
 
-- **Default:** omit `--direction` — the AI continues the story from the series memory.
+- **Default:** omit `--direction`, the AI continues the story from the series memory.
 - **User-written:** pass `--direction "she gets the investor call mid-workout and has to
-  decide on the spot"` — the AI only breaks the user's plot into scenes and natural lines.
+  decide on the spot"`, the AI only breaks the user's plot into scenes and natural lines.
 - Either way the draft comes back as an editable script; on the web studio individual
   lines can be edited before approval. Via CLI, re-draft with a sharper `--direction`
   instead of hand-editing scenes.
@@ -57,10 +57,10 @@ Add `--tone` for delivery ("dry humor, a little teasing, cliffhanger endings").
 
 - **Dialogue length:** ~15 words max per 10s scene; near-silent during physical action
   (the video model drops actions when lines are long).
-- **No selfie-filming:** scenes must never have her holding a phone — the pipeline films
+- **No selfie-filming:** scenes must never have her holding a phone, the pipeline films
   her from a propped camera so her hands stay free. If a drafted scene has her filming
   herself, re-draft.
-- **One location per scene, walkable transitions** — no teleporting inside an episode.
+- **One location per scene, walkable transitions**: no teleporting inside an episode.
 - **Cliffhanger:** episodes should end on a small hook; that's what makes a series.
 
 ## Cadence for a daily account
@@ -68,7 +68,7 @@ Add `--tone` for delivery ("dry humor, a little teasing, cliffhanger endings").
 1. Once: `stories create` with a strong premise.
 2. Daily: `stories draft <id>` → show the user the script → `stories approve <id> <ep> --wait`
    → the finished .mp4 downloads, ready to post to TikTok/Reels/Shorts.
-3. `stories show <id>` displays the story-so-far memory — use it to pitch the user
+3. `stories show <id>` displays the story-so-far memory, use it to pitch the user
    tomorrow's `--direction` ideas.
 4. One episode at a time per series: finish (or discard) the current episode before
    drafting the next.

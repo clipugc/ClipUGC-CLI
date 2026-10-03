@@ -28,6 +28,7 @@ const MCP_TOOL_NAMES = [
   'list_images',
   'create_clip',
   'create_motion_clip',
+  'create_scene_replace_clip',
   'merge_ad',
   'get_video',
   'download_video',
@@ -252,6 +253,28 @@ async function main(): Promise<void> {
   if (videoId === undefined) fail(`no video id in: ${JSON.stringify(video)}`);
   pass(`videos create --wait → id ${videoId}`);
 
+  // Wan engine and scene replace (card #57). Submit only: against a mocked server the
+  // render never finishes, so these check the request round trip, not the output.
+  // CLIPUGC_E2E_DRIVER points at a real mp4 when running against the real API.
+  const driverFile = process.env.CLIPUGC_E2E_DRIVER ?? makeDummyFile('driver.mp4');
+  const extraClips: Array<string | number> = [];
+  for (const [label, args, expect] of [
+    ['videos motion --engine wan', ['videos', 'motion', '--image', String(imageId), '--driver', driverFile, '--engine', 'wan', '--resolution', '720p'], { mode: 'motion_control', engine: 'wan' }],
+    ['videos replace', ['videos', 'replace', '--image', String(imageId), '--driver', driverFile], { mode: 'scene_replace', engine: 'wan' }],
+  ] as const) {
+    const res = run([...args, '--json'], { allowFail: true });
+    if (res.code !== 0) {
+      warn(`${label} failed (exit ${res.code}); the server may predate card #57 or the account lacks credits:\n${res.stderr}`);
+      continue;
+    }
+    const clip = JSON.parse(res.stdout) as Record<string, unknown>;
+    if (clip.mode !== expect.mode || clip.engine !== expect.engine) {
+      fail(`${label}: expected mode ${expect.mode} / engine ${expect.engine}, got ${JSON.stringify(clip)}`);
+    }
+    extraClips.push(clip.id as string | number);
+    pass(`${label} → id ${clip.id} (${clip.mode}, ${clip.engine})`);
+  }
+
   // Merge (dummy app video; mocked pipeline should accept it — tolerate failure).
   // The merge produces an AD with its own id; everything after the merge uses that id.
   const appVideo = makeDummyFile('app-recording.mp4');
@@ -305,6 +328,7 @@ async function main(): Promise<void> {
   // Cleanup. Deleting the ad leaves the clip alone, so delete both.
   if (adId !== undefined) run(['ads', 'delete', String(adId), '--yes'], { allowFail: true });
   run(['videos', 'delete', String(videoId), '--yes'], { allowFail: true });
+  for (const id of extraClips) run(['videos', 'delete', String(id), '--yes'], { allowFail: true });
   run(['characters', 'delete', String(characterId), '--yes'], { allowFail: true });
   run(['auth', 'logout']);
   pass('cleanup + logout');

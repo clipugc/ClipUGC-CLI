@@ -63,9 +63,9 @@ beforeEach(() => {
 });
 
 describe('mcp tool catalogue', () => {
-  it('registers exactly the 11 documented tools, each with a description and schema', () => {
+  it('registers exactly the 12 documented tools, each with a description and schema', () => {
     expect(TOOLS.map((t) => t.name).sort()).toEqual([...TOOL_NAMES].sort());
-    expect(TOOLS).toHaveLength(11);
+    expect(TOOLS).toHaveLength(12);
     for (const t of TOOLS) {
       expect(t.description.length, `${t.name} description`).toBeGreaterThan(40);
       expect(t.inputSchema, `${t.name} inputSchema`).toBeTypeOf('object');

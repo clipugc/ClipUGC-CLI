@@ -8,11 +8,11 @@ argument-hint: "[command or description]"
 
 You are helping the user run ClipUGC CLI commands. [ClipUGC](https://clipugc.com) makes AI-generated, influencer-style UGC (user-generated-content) marketing videos for mobile apps. The pipeline: create an AI character (structured appearance "DNA") → generate photorealistic looks (reference images) → turn a look into short video clips → put the user's app screen recording + a hook text (+ optional music) into a clip to make the finished UGC video.
 
-Credits are consumed server-side (duration-aware; refunds return the exact amount charged): image = 2, clip (5s) = 7, clip (10s) = 13, motion control = 3 per second of driver video (rounded up, capped at 30s), scene-staged clip (a video created with `--scene`) = 9, finished video (app recording + hook) = free (0). Prefer the live values from `clipugc credits`.
+Credits are consumed server-side (duration-aware; refunds return the exact amount charged): image = 2, clip (5s) = 7, clip (10s) = 13, motion control = 3 per second of driver video on the default kling engine, 2 on `--engine wan` (rounded up, capped at 30s), putting a character into your own video (`videos replace`) = 3 per second (capped at 30s), scene-staged clip (a video created with `--scene`) = 9, finished video (app recording + hook) = free (0). Prefer the live values from `clipugc credits`.
 
 > **MCP alternative.** The same binary is an MCP server (`clipugc mcp`). If this session has the
 > `clipugc` MCP server connected (tools named `list_characters`, `create_character`, `generate_image`,
-> `list_images`, `create_clip`, `create_motion_clip`, `merge_ad`, `get_video`, `download_video`,
+> `list_images`, `create_clip`, `create_motion_clip`, `create_scene_replace_clip`, `merge_ad`, `get_video`, `download_video`,
 > `get_credits`, `list_hooks`), prefer those tools over shelling out: they call the same API with the
 > same API key, take the same arguments as the CLI flags (underscores instead of dashes, e.g.
 > `per_page`), and return JSON. Generation tools return the job id immediately; poll `get_video`
@@ -49,7 +49,8 @@ Match the user's intent (from `$ARGUMENTS` or conversation context) to the right
 | Retry / delete an image | `clipugc images retry <id> --wait` / `images delete <id> [--yes]` |
 | List clips | `clipugc videos list [--character <id>] [--mergeable]`, `--character` filters to one AI character, `--mergeable` = completed clips with no finished video yet (ready for `videos merge`) |
 | Create a video clip from a look or photo | `clipugc videos create (--image <lookId> \| --photo <file>) [--prompt "..."] [--scene "..."] [--duration 5\|10] [--keep-sound] --wait`, with `--scene` the server first stages that look into the new setting (same face), then animates it (scene-staged cost) |
-| Animate a look/photo with a driver video | `clipugc videos motion (--image <lookId> \| --photo <file>) --driver <video.mp4> [--keep-sound] --wait` |
+| Animate a look/photo with a driver video | `clipugc videos motion (--image <lookId> \| --photo <file>) --driver <video.mp4> [--engine kling\|wan] [--resolution 720p] [--keep-sound] --wait`, `--engine wan` is cheaper (2/sec), keeps the look's background and ignores `--prompt`; kling (default) reads `--prompt` |
+| Put the character into the user's own video | `clipugc videos replace --image <lookId> --driver <yourVideo.mp4> [--resolution 720p] [--keep-sound] --wait`, the character takes the place of the person in a video the user filmed or holds the rights to, in its own scene; the clip carries an "AI generated" label. Only looks of characters designed in ClipUGC work, never the user's own photo. Never pass someone else's social video. |
 | Add app recording + hook to a clip (finished UGC video) | `clipugc videos merge <videoId> --app-video <screenrec.mp4> --hook "..." [--music <file.mp3>] --wait`, creates a finished video with its OWN id (printed; `merged_video_id` under `--json`). `--wait` blocks until the render finishes (or fails); then `finished download <videoId>` gets the file |
 | Inspect / download a clip | `clipugc videos show <id>` / `videos status <id>` / `videos download <id> [-o out.mp4]` |
 | Retry / delete a clip | `clipugc videos retry <id> --wait` / `videos delete <id> [--yes]` |
@@ -89,7 +90,7 @@ Before running ANY command, always check:
 2. **Authenticated**: Run `clipugc auth status`. If not logged in, tell the user to create an API key in the ClipUGC dashboard (https://clipugc.com/dashboard → API keys) and run `clipugc auth login`. Do NOT ask the user to paste the key into chat, `auth login` prompts for it securely in the terminal.
 **Credits packs**: `clipugc credits packs` lists purchasable packs (buy on the web dashboard / mobile IAP).
 
-3. **Credits**: Before any generation command (`images generate`, `images variation`, `videos create`, `videos motion`, `videos merge`), run `clipugc credits` to check the balance against the action's cost (image 2, clip 5s 7, clip 10s 13, motion control 3 per second of driver video, scene-staged clip 9, finished video free). Costs are duration-aware, so prefer the live values from `clipugc credits` over hard-coded numbers.
+3. **Credits**: Before any generation command (`images generate`, `images variation`, `videos create`, `videos motion`, `videos replace`, `videos merge`), run `clipugc credits` to check the balance against the action's cost (image 2, clip 5s 7, clip 10s 13, motion control 3 per second of driver video, scene-staged clip 9, finished video free). Costs are duration-aware, so prefer the live values from `clipugc credits` over hard-coded numbers.
 
 ## Project workspace: organized output & resuming
 

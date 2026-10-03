@@ -1,7 +1,7 @@
 {
   "name": "clipugc",
-  "description": "ClipUGC skills for Claude Code: a UGC video director (reaction archetypes, hook formulas, casting, prompt library), a persona-account runner for ongoing AI creator accounts (persona definition, content pillars, next-post loop, grid composition), plus the full CLI: create AI characters, generate photorealistic looks, produce silent-reaction video clips, and add app screen recordings to make ready-to-post UGC videos. New: story-runner, ongoing story series where an AI character lives a continuing life in short talking episodes, each picking up from the previous episode’s last frame.",
-  "version": "2.2.3",
+  "description": "ClipUGC skills for Claude Code: a UGC video director (reaction archetypes, hook formulas, casting, prompt library), a persona-account runner for ongoing AI creator accounts (persona definition, content pillars, next-post loop, grid composition), plus the full CLI: create AI characters, generate photorealistic looks, produce silent-reaction video clips, copy a movement from a reference video on two engines, put a character into a video you filmed, and add app screen recordings to make ready-to-post UGC videos. New: story-runner, ongoing story series where an AI character lives a continuing life in short talking episodes, each picking up from the previous episode’s last frame.",
+  "version": "2.3.0",
   "author": {
     "name": "ClipUGC",
     "url": "https://clipugc.com"

@@ -1,7 +1,7 @@
 {
   "identifier": "clipugc",
   "name": "ClipUGC",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Generate AI UGC videos for your app from Claude Code, Cursor or any MCP client: create an AI influencer, make her photo, turn it into a talking 5 or 10 second video, add your app screen recording and a hook line, download the file. Needs a ClipUGC API key.",
   "author": "ClipUGC",
   "authorUrl": "https://clipugc.com",
@@ -267,7 +267,7 @@
     {
       "name": "create_motion_clip",
       "title": "Create a motion-control clip",
-      "description": "Animate a character look (or your own photo) by copying the motion of a driver video. Same as `clipugc videos motion`. Costs 3 credits per second of driver video, rounded up, capped at 30 seconds (confirm with get_credits). The driver must be mp4/mov, at most 50 MB and 30 seconds; it is uploaded first. Provide exactly one of image or photo. Returns the clip id and status. Generation runs in the background. Poll get_video with {\"id\": <clip id>, \"kind\": \"clip\"} every 5 to 10 seconds until status is \"completed\" or \"failed\", then call download_video.",
+      "description": "Animate a character look (or your own photo) by copying the motion of a driver video. Same as `clipugc videos motion`. Two engines: kling (default, 3 credits per second of driver video, reads the prompt) or wan (2 credits per second, keeps the look's own background, ignores the prompt, resolution 480p, 580p or 720p). Rounded up, capped at 30 seconds (confirm with get_credits). The driver must be mp4/mov, at most 50 MB and 30 seconds; it is uploaded first. Provide exactly one of image or photo. Returns the clip id and status. Generation runs in the background. Poll get_video with {\"id\": <clip id>, \"kind\": \"clip\"} every 5 to 10 seconds until status is \"completed\" or \"failed\", then call download_video.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -289,12 +289,75 @@
             "type": "string",
             "maxLength": 1500
           },
+          "engine": {
+            "description": "kling (default) or wan, the cheaper engine (same as --engine).",
+            "type": "string",
+            "enum": [
+              "kling",
+              "wan"
+            ]
+          },
+          "resolution": {
+            "description": "wan only: 480p, 580p or 720p, default 720p (same as --resolution).",
+            "type": "string",
+            "enum": [
+              "480p",
+              "580p",
+              "720p"
+            ]
+          },
           "keep_sound": {
             "description": "Keep the driver video's original sound (same as --keep-sound).",
             "type": "boolean"
           }
         },
         "required": [
+          "driver"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "create_scene_replace_clip",
+      "title": "Put a character into your own video",
+      "description": "Put an AI influencer into a video the user filmed or holds the rights to: the character takes the place of the person in it, in that video's own room, light and camera, and the clip carries a visible \"AI generated\" label. Same as `clipugc videos replace`. Needs a look of a character designed in ClipUGC (not the user's own photo) and a local video file, mp4/mov, at most 50 MB and 30 seconds; it is uploaded first. Costs 3 credits per second of the video, rounded up, capped at 30 seconds (confirm with get_credits). Rendering takes several minutes. Returns the clip id and status. Generation runs in the background. Poll get_video with {\"id\": <clip id>, \"kind\": \"clip\"} every 5 to 10 seconds until status is \"completed\" or \"failed\", then call download_video.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Id of a generated character look (same as --image)."
+          },
+          "driver": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Local path of the user's own video, mp4/mov, max 50 MB and 30s (same as --driver)."
+          },
+          "resolution": {
+            "description": "480p, 580p or 720p, default 720p (same as --resolution).",
+            "type": "string",
+            "enum": [
+              "480p",
+              "580p",
+              "720p"
+            ]
+          },
+          "keep_sound": {
+            "description": "Keep the video's original sound (same as --keep-sound).",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "image",
           "driver"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -431,7 +494,7 @@
     {
       "name": "get_credits",
       "title": "Get credit balance and costs",
-      "description": "Return the authenticated user's credit balance and the live per-action credit costs (image, clip, clip_10s, scene_staged, motion_per_second, merge). Same as `clipugc credits`. Call it before any generation tool so you can tell the user the cost and stop early when the balance is too low. Costs no credits.",
+      "description": "Return the authenticated user's credit balance and the live per-action credit costs (image, clip, clip_10s, scene_staged, motion_per_second, motion_wan_per_second, scene_replace_per_second, merge). Same as `clipugc credits`. Call it before any generation tool so you can tell the user the cost and stop early when the balance is too low. Costs no credits.",
       "inputSchema": {
         "type": "object",
         "properties": {},

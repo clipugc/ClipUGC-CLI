@@ -33,7 +33,7 @@ clipugc characters list --mine --json
 
 ## Waiting on long-running jobs
 
-Generation commands (`images generate`, `images variation`, `images retry`, `videos create`, `videos motion`, `videos merge`, `videos retry`, `finished retry`) accept `--wait` to poll with a spinner until the job is `completed` or `failed`. Without `--wait`, the command returns immediately and you can poll with `images status <id>` / `videos status <id>` / `finished show <videoId>`.
+Generation commands (`images generate`, `images variation`, `images retry`, `videos create`, `videos motion`, `videos replace`, `videos merge`, `videos retry`, `finished retry`) accept `--wait` to poll with a spinner until the job is `completed` or `failed`. Without `--wait`, the command returns immediately and you can poll with `images status <id>` / `videos status <id>` / `finished show <videoId>`.
 
 ## Exit codes
 

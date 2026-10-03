@@ -4,6 +4,7 @@ import {
   checkVideoStatus,
   createImageToVideo,
   createMotionControl,
+  createSceneReplace,
   deleteVideo,
   downloadVideo,
   getVideo,
@@ -69,18 +70,25 @@ function mergedLabel(v: CharacterVideo): string {
 }
 
 /** Shared post-create flow: --wait polling or a status hint. */
+/**
+ * Wan renders scale with the video's length (about 10 minutes for 5 seconds at 720p), so
+ * --wait gives them two hours instead of the default twenty minutes.
+ */
+const WAN_WAIT_MS = 2 * 60 * 60 * 1000;
+
 async function finishCreate(
   api: ApiClient,
   video: CharacterVideo,
   opts: { wait?: boolean },
   json: boolean,
   label: string,
+  timeoutMs?: number,
 ): Promise<void> {
   const id = String(video.id);
   if (opts.wait) {
     const finalStatus = await waitForCompletion(
       () => checkVideoStatus(api, id) as Promise<VideoStatusCheck & { status: string }>,
-      { label, quiet: json },
+      { label, quiet: json, timeoutMs },
     );
     if (json) {
       printJson(finalStatus);
@@ -193,11 +201,15 @@ export function registerVideosCommands(program: Command): void {
 
   videos
     .command('motion')
-    .description('Generate a character video driven by a reference video (motion control). Costs 3 credits per second of driver video (rounded up, capped at 30s)')
+    .description(
+      'Generate a character video driven by a reference video (motion control). Costs 3 credits per second of driver video on the default kling engine, 2 on --engine wan (rounded up, capped at 30s)',
+    )
     .option('--image <lookId>', 'ID of a generated character look/reference image')
     .option('--photo <file>', 'Path to your own photo (png/jpg/jpeg/webp), uploaded first')
     .requiredOption('--driver <videoFile>', 'Driver video (mp4/mov, max 50 MB and 30s) whose motion is applied')
-    .option('--prompt <text>', 'What the character should say/do (max 1500 chars)')
+    .option('--prompt <text>', 'What the character should say/do (max 1500 chars, kling only; wan ignores it)')
+    .option('--engine <engine>', 'kling (default, follows the motion closely) or wan (cheaper, keeps the look\'s own background)')
+    .option('--resolution <res>', 'wan only: 480p, 580p or 720p (default 720p, same price at each)')
     .option('--keep-sound', "Keep the driver video's original sound")
     .option('--wait', 'Wait until generation completes')
     .action(
@@ -207,6 +219,8 @@ export function registerVideosCommands(program: Command): void {
           photo?: string;
           driver: string;
           prompt?: string;
+          engine?: string;
+          resolution?: string;
           keepSound?: boolean;
           wait?: boolean;
         },
@@ -220,9 +234,39 @@ export function registerVideosCommands(program: Command): void {
           ...source,
           referenceVideoKey,
           prompt: opts.prompt,
+          engine: opts.engine,
+          resolution: opts.resolution,
           keepOriginalSound: opts.keepSound,
         });
-        await finishCreate(api, video, opts, json, 'Generating video');
+        await finishCreate(api, video, opts, json, 'Generating video', opts.engine === 'wan' ? WAN_WAIT_MS : undefined);
+      },
+    );
+
+  videos
+    .command('replace')
+    .description(
+      'Put your AI influencer into a video you filmed or hold the rights to: the character takes the place of the person in it, in that video\'s own room and light. Costs 3 credits per second of your video (rounded up, capped at 30s). Clips carry an "AI generated" label',
+    )
+    .requiredOption('--image <lookId>', 'ID of a look of a character designed in ClipUGC (your own photos cannot be used)')
+    .requiredOption('--driver <videoFile>', 'Your video (mp4/mov, max 50 MB and 30s), uploaded first')
+    .option('--resolution <res>', '480p, 580p or 720p (default 720p, same price at each)')
+    .option('--keep-sound', "Keep your video's original sound")
+    .option('--wait', 'Wait until generation completes')
+    .action(
+      async (
+        opts: { image: string; driver: string; resolution?: string; keepSound?: boolean; wait?: boolean },
+        cmd: Command,
+      ) => {
+        const json = isJsonMode(cmd);
+        const api = await createApiClient();
+        const referenceVideoKey = await uploadFile(api, 'driver_video', opts.driver, { quiet: json });
+        const video = await createSceneReplace(api, {
+          characterReferenceImageId: opts.image,
+          referenceVideoKey,
+          resolution: opts.resolution,
+          keepOriginalSound: opts.keepSound,
+        });
+        await finishCreate(api, video, opts, json, 'Generating video', WAN_WAIT_MS);
       },
     );
 

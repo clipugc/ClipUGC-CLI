@@ -78,7 +78,8 @@ Every command, flag and credit cost. Add `--json` to any command for machine-rea
 |---------|-------------|
 | `clipugc videos list [--character <id>] [--mergeable \| --finals] [--page N] [--per-page N]` | List your clips. `--character` filters to one AI character, `--mergeable` shows only completed clips with no finished video yet (ready for `videos merge`). `--finals` lists **finished videos** instead of clips, identical to `clipugc finished list`, and the ids it prints are finished video ids. |
 | `clipugc videos create (--image <lookId> \| --photo <file>) [flags] [--wait]` | Create a video clip from a look or your own photo. Costs 7 credits (5s) or 13 (10s); a `--scene` staged clip costs 9. |
-| `clipugc videos motion (--image <lookId> \| --photo <file>) --driver <video.mp4> [--keep-sound] [--wait]` | Animate a look/photo using a driver video (mp4/mov, max 50MB, max 30s). Costs 3 credits per second of driver video (rounded up, capped at 30s). |
+| `clipugc videos motion (--image <lookId> \| --photo <file>) --driver <video.mp4> [--engine kling\|wan] [--resolution 480p\|580p\|720p] [--keep-sound] [--wait]` | Animate a look/photo using a driver video (mp4/mov, max 50MB, max 30s). `--engine kling` (default) follows the motion closely and reads `--prompt`, 3 credits per second of driver video. `--engine wan` is cheaper, keeps the look's own background and ignores `--prompt`, 2 credits per second; `--resolution` (wan only) defaults to 720p, same price at each. Rounded up, capped at 30s. Wan renders take longer (about 10 minutes for 5 seconds), so `--wait` allows up to two hours. |
+| `clipugc videos replace --image <lookId> --driver <yourVideo.mp4> [--resolution 480p\|580p\|720p] [--keep-sound] [--wait]` | Put your AI influencer into a video you filmed or hold the rights to: the character takes the place of the person in it, in that video's own room and light, and the clip carries an "AI generated" label. The look must belong to a character designed in ClipUGC (your own photos, and characters made from an uploaded photo, are refused). 3 credits per second of your video, rounded up, capped at 30s. |
 | `clipugc videos merge <videoId> --app-video <screenrec.mp4> --hook "..." [--music <file.mp3>] [--wait]` | Put your app's screen recording + a hook (max 150 chars) into a clip to make the finished UGC video. Free, it costs no credits. Prints the new **finished video id** (`merged_video_id` under `--json`); `--wait` blocks until the render finishes. |
 | `clipugc videos show <id>` | Show clip details (including the id of the finished video made from it, if any). |
 | `clipugc videos status <id>` | Check generation status. |
@@ -136,7 +137,8 @@ Tools exposed, with the CLI command each one mirrors:
 | `generate_image` | `images generate` | `character`, `shots`, `template`, `scene`, `resolution`. 2 credits per shot. |
 | `list_images` | `images list --character` | Also the poll call for looks. |
 | `create_clip` | `videos create` | `image` or `photo`, `prompt`, `scene`, `duration` (5 or 10), `keep_sound`. 7 / 13 credits. |
-| `create_motion_clip` | `videos motion` | `image` or `photo`, `driver`, `prompt`, `keep_sound`. 3 credits per driver second. |
+| `create_motion_clip` | `videos motion` | `image` or `photo`, `driver`, `prompt`, `engine` (kling or wan), `resolution` (wan), `keep_sound`. 3 credits per driver second on kling, 2 on wan. |
+| `create_scene_replace_clip` | `videos replace` | `image`, `driver` (your own video), `resolution`, `keep_sound`. 3 credits per second of the video. |
 | `merge_ad` | `videos merge <clipId>` | `video`, `app_video`, `hook`, `music`. Returns `merged_video_id` (a finished video id). |
 | `get_video` | `videos status <id>` / `finished show <videoId>` | `id`, `kind`: clip (default) or finished. The poll tool. |
 | `download_video` | `videos download` / `finished download` | `id`, `kind`, `output`. |

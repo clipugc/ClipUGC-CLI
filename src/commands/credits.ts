@@ -13,13 +13,26 @@ const COST_LABELS: Record<string, string> = {
   image: 'image',
   clip: 'clip (5s)',
   clip_10s: 'clip (10s)',
-  motion_per_second: 'motion control (per second)',
+  motion_per_second: 'motion control, kling (per second)',
+  motion_wan_per_second: 'motion control, wan (per second)',
+  scene_replace_per_second: 'put into your video (per second)',
+  motion_max_seconds: 'longest driver video (seconds)',
   scene_staged: 'scene-staged clip',
   merge: 'finished video',
 };
 
 /** Preferred display order for known cost keys; unknown keys follow, sorted. */
-const COST_ORDER = ['image', 'clip', 'clip_10s', 'scene_staged', 'motion_per_second', 'merge'];
+const COST_ORDER = [
+  'image',
+  'clip',
+  'clip_10s',
+  'scene_staged',
+  'motion_per_second',
+  'motion_wan_per_second',
+  'scene_replace_per_second',
+  'motion_max_seconds',
+  'merge',
+];
 
 function costLabel(action: string): string {
   return COST_LABELS[action] ?? action.replace(/_/g, ' ');

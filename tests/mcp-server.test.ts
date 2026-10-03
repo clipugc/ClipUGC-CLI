@@ -29,7 +29,7 @@ beforeEach(() => {
 });
 
 describe('clipugc mcp server', () => {
-  it('lists all 11 tools with JSON schemas after the initialize handshake', async () => {
+  it('lists all 12 tools with JSON schemas after the initialize handshake', async () => {
     const client = await connectedClient();
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([...TOOL_NAMES].sort());

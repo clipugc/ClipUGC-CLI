@@ -57,7 +57,7 @@ describe('credits command (rendering)', () => {
 
     expect(out).toContain('clip (5s)');
     expect(out).toContain('clip (10s)');
-    expect(out).toContain('motion control (per second)');
+    expect(out).toContain('motion control, kling (per second)');
     expect(out).toContain('scene-staged clip');
     logSpy.mockRestore();
   });

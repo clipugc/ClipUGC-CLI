@@ -10,7 +10,7 @@ import { TOOLS, TOOL_NAMES } from '../src/mcp/tools.js';
  */
 const READ_ONLY = ['list_characters', 'list_images', 'get_video', 'get_credits', 'list_hooks'] as const;
 // Writers: the five that spend credits, plus download_video, which writes a file to disk.
-const SPENDS_CREDITS = ['create_character', 'generate_image', 'create_clip', 'create_motion_clip', 'merge_ad', 'download_video'] as const;
+const SPENDS_CREDITS = ['create_character', 'generate_image', 'create_clip', 'create_motion_clip', 'create_scene_replace_clip', 'merge_ad', 'download_video'] as const;
 
 describe('MCP tool annotations', () => {
   it('covers every registered tool exactly once', () => {

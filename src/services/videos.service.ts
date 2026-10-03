@@ -50,11 +50,49 @@ export interface ImageToVideoInput {
   keepOriginalSound?: boolean;
 }
 
+/** Motion engines: kling (default, 3 credits/sec) or wan (Wan 2.2 Animate move, 2 credits/sec). */
+export const MOTION_ENGINES = ['kling', 'wan'] as const;
+export type MotionEngine = (typeof MOTION_ENGINES)[number];
+
+/** Wan output resolutions (same price at each). */
+export const WAN_RESOLUTIONS = ['480p', '580p', '720p'] as const;
+export type WanResolution = (typeof WAN_RESOLUTIONS)[number];
+
 export interface MotionControlInput extends Omit<ImageToVideoInput, 'scenePrompt' | 'duration'> {
   /** Storage key of the uploaded driver video (purpose driver_video). */
   referenceVideoKey: string;
   scenePrompt?: string;
   duration?: number;
+  /** kling (default) or wan. */
+  engine?: string;
+  /** wan only: 480p, 580p or 720p (server default 720p). */
+  resolution?: string;
+}
+
+export interface SceneReplaceInput {
+  /** Look id of an AI character designed in ClipUGC. Uploaded photos are not accepted. */
+  characterReferenceImageId: string;
+  /** Storage key of your own uploaded video (purpose driver_video). */
+  referenceVideoKey: string;
+  /** 480p, 580p or 720p (server default 720p). */
+  resolution?: string;
+  keepOriginalSound?: boolean;
+}
+
+function validateEngine(engine: string | undefined, resolution: string | undefined): void {
+  if (engine !== undefined && !(MOTION_ENGINES as readonly string[]).includes(engine)) {
+    throw new ValidationError(`--engine must be one of ${MOTION_ENGINES.join(', ')} (got "${engine}").`);
+  }
+  validateResolution(resolution);
+  if (resolution !== undefined && engine !== 'wan') {
+    throw new ValidationError('--resolution only applies to --engine wan.');
+  }
+}
+
+function validateResolution(resolution: string | undefined): void {
+  if (resolution !== undefined && !(WAN_RESOLUTIONS as readonly string[]).includes(resolution)) {
+    throw new ValidationError(`--resolution must be one of ${WAN_RESOLUTIONS.join(', ')} (got "${resolution}").`);
+  }
 }
 
 export interface MergeInput {
@@ -173,13 +211,40 @@ export async function createMotionControl(api: ApiClient, input: MotionControlIn
   }
   validatePrompts(input.prompt, input.scenePrompt);
 
+  validateEngine(input.engine, input.resolution);
+
   const payload = baseVideoPayload(input);
   payload.reference_video_key = input.referenceVideoKey;
   if (input.duration !== undefined) {
     validateDuration(input.duration);
     payload.duration = input.duration;
   }
+  if (input.engine !== undefined) payload.engine = input.engine;
+  if (input.resolution !== undefined) payload.resolution = input.resolution;
   return api.post<CharacterVideo>('/character-videos/motion-control', { body: payload });
+}
+
+/**
+ * POST /character-videos/scene-replace: put an AI character into your own video. The
+ * character takes the place of the person in it, in that video's own scene. The subject
+ * must be a look of a character designed in ClipUGC; every clip carries an "AI generated" label.
+ */
+export async function createSceneReplace(api: ApiClient, input: SceneReplaceInput): Promise<CharacterVideo> {
+  if (!input.characterReferenceImageId) {
+    throw new ValidationError('A character look is required (--image <lookId>). Your own photos cannot be used here.');
+  }
+  if (!input.referenceVideoKey) {
+    throw new ValidationError('Your video is required (--driver <videoFile>).');
+  }
+  validateResolution(input.resolution);
+
+  const payload: Record<string, unknown> = {
+    character_reference_image_id: input.characterReferenceImageId,
+    reference_video_key: input.referenceVideoKey,
+  };
+  if (input.resolution !== undefined) payload.resolution = input.resolution;
+  if (input.keepOriginalSound) payload.keep_original_sound = true;
+  return api.post<CharacterVideo>('/character-videos/scene-replace', { body: payload });
 }
 
 /** POST /character-videos/{id}/merge — merge app recording + hook text (+ music) into the final UGC video. */

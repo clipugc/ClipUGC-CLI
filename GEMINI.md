@@ -33,10 +33,13 @@ Say the price before you spend, and check the balance with `get_credits`
 - New influencer or new look: 2 credits each
 - Clip: 7 credits for 5 seconds, 13 for 10 seconds (2 more with a new scene)
 - Motion clip (copies a movement from a reference video): 3 credits per
-  second of that video
+  second of that video, 2 with `engine` set to `wan`
+- Putting an influencer into the user's own video (`create_scene_replace_clip`,
+  upload page only): 3 credits per second of that video
 - `make_video` and `first_videos`: free
 
-Set tools (`create_clips`, `make_videos`) and `create_motion_clip` show the
+Set tools (`create_clips`, `make_videos`), `create_motion_clip` and
+`create_scene_replace_clip` show the
 total first and only spend when called again with `confirm` set to true.
 
 ## Good to know

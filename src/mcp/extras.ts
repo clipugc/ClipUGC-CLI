@@ -36,7 +36,8 @@ image (a photo of a character): 2
 clip, 5 seconds: 7
 clip, 10 seconds: 13
 clip with a scene (character staged in a place first): 9 for 5 seconds, 15 for 10 seconds
-motion clip: 3 per second of the driver video, capped at 30 seconds
+motion clip: 3 per second of the driver video on kling, 2 on wan, capped at 30 seconds
+character put into your own video (create_scene_replace_clip): 3 per second of the video, capped at 30 seconds
 finished video (app recording plus hook on a clip, the "merge" entry): free
 listing, status, download and hook suggestions: free
 

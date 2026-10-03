@@ -31,6 +31,7 @@ export const TOOL_NAMES = [
   'list_images',
   'create_clip',
   'create_motion_clip',
+  'create_scene_replace_clip',
   'merge_ad',
   'get_video',
   'download_video',
@@ -304,7 +305,8 @@ export const TOOLS: readonly ToolDefinition[] = [
     title: 'Create a motion-control clip',
     description:
       'Animate a character look (or your own photo) by copying the motion of a driver video. Same as `clipugc videos motion`. ' +
-      'Costs 3 credits per second of driver video, rounded up, capped at 30 seconds (confirm with get_credits). ' +
+      'Two engines: kling (default, 3 credits per second of driver video, reads the prompt) or wan (2 credits per second, keeps the ' +
+      'look\'s own background, ignores the prompt, resolution 480p, 580p or 720p). Rounded up, capped at 30 seconds (confirm with get_credits). ' +
       'The driver must be mp4/mov, at most 50 MB and 30 seconds; it is uploaded first. Provide exactly one of image or photo. ' +
       'Returns the clip id and status. ' + POLL_CLIP,
     inputSchema: {
@@ -312,6 +314,8 @@ export const TOOLS: readonly ToolDefinition[] = [
       photo: z.string().optional().describe('Local path to your own photo, png/jpg/jpeg/webp; uploaded first (same as --photo).'),
       driver: z.string().min(1).describe('Local path of the driver video, mp4/mov, max 50 MB and 30s (same as --driver).'),
       prompt: z.string().max(videos.MAX_PROMPT_LENGTH).optional().describe('What the character does, max 1500 chars (same as --prompt).'),
+      engine: z.enum(videos.MOTION_ENGINES).optional().describe('kling (default) or wan, the cheaper engine (same as --engine).'),
+      resolution: z.enum(videos.WAN_RESOLUTIONS).optional().describe('wan only: 480p, 580p or 720p, default 720p (same as --resolution).'),
       keep_sound: z.boolean().optional().describe('Keep the driver video\'s original sound (same as --keep-sound).'),
     },
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
@@ -323,6 +327,38 @@ export const TOOLS: readonly ToolDefinition[] = [
         ...source,
         referenceVideoKey,
         prompt: args.prompt,
+        engine: args.engine,
+        resolution: args.resolution,
+        keepOriginalSound: args.keep_sound,
+      });
+      return { id: video.id, status: video.status, video, next: POLL_CLIP };
+    },
+  }),
+
+  define({
+    name: 'create_scene_replace_clip',
+    title: 'Put a character into your own video',
+    description:
+      'Put an AI influencer into a video the user filmed or holds the rights to: the character takes the place of the person ' +
+      'in it, in that video\'s own room, light and camera, and the clip carries a visible "AI generated" label. Same as ' +
+      '`clipugc videos replace`. Needs a look of a character designed in ClipUGC (not the user\'s own photo) and a local video ' +
+      'file, mp4/mov, at most 50 MB and 30 seconds; it is uploaded first. Costs 3 credits per second of the video, rounded up, ' +
+      'capped at 30 seconds (confirm with get_credits). Rendering takes several minutes. Returns the clip id and status. ' +
+      POLL_CLIP,
+    inputSchema: {
+      image: z.string().min(1).describe('Id of a generated character look (same as --image).'),
+      driver: z.string().min(1).describe('Local path of the user\'s own video, mp4/mov, max 50 MB and 30s (same as --driver).'),
+      resolution: z.enum(videos.WAN_RESOLUTIONS).optional().describe('480p, 580p or 720p, default 720p (same as --resolution).'),
+      keep_sound: z.boolean().optional().describe('Keep the video\'s original sound (same as --keep-sound).'),
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+    handler: async (args) => {
+      const api = await createApiClient();
+      const referenceVideoKey = await uploads.uploadFile(api, 'driver_video', args.driver, { quiet: true });
+      const video = await videos.createSceneReplace(api, {
+        characterReferenceImageId: args.image,
+        referenceVideoKey,
+        resolution: args.resolution,
         keepOriginalSound: args.keep_sound,
       });
       return { id: video.id, status: video.status, video, next: POLL_CLIP };
@@ -434,7 +470,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     title: 'Get credit balance and costs',
     description:
       'Return the authenticated user\'s credit balance and the live per-action credit costs (image, clip, clip_10s, scene_staged, ' +
-      'motion_per_second, merge). Same as `clipugc credits`. Call it before any generation tool so you can tell the user the ' +
+      'motion_per_second, motion_wan_per_second, scene_replace_per_second, merge). Same as `clipugc credits`. Call it before any generation tool so you can tell the user the ' +
       'cost and stop early when the balance is too low. Costs no credits.',
     inputSchema: {},
     annotations: { readOnlyHint: true, openWorldHint: true },

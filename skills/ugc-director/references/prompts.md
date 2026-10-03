@@ -125,6 +125,6 @@ Handheld framing, slight wobble. She is looking down concentrating, then slowly 
 
 ## Duration & cost cheatsheet
 
-- Look: 2 credits. Clip: 7 credits (5s) / 13 (10s); a `--scene` staged clip is 9. Motion control: 3 credits per second of driver video (rounded up, capped at 30s). Finished video (app recording + hook): free. Costs are duration-aware, read the live values with `clipugc credits`.
+- Look: 2 credits. Clip: 7 credits (5s) / 13 (10s); a `--scene` staged clip is 9. Motion control: 3 credits per second of driver video (rounded up, capped at 30s), 2 on `--engine wan`. `videos replace` (the character put into a video the user filmed): 3 per second. Finished video (app recording + hook): free. Costs are duration-aware, read the live values with `clipugc credits`.
 - Default `--duration 5`. A full video = 1 look (2) + 1 clip (7) + 1 finished video (0) = ~9 credits minimum.
 - Hook A/B: reuse the same clip, run `videos merge` again with a different `--hook` (free per variant).

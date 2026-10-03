@@ -3,6 +3,7 @@ import type { ApiClient } from '../src/services/api.js';
 import {
   createImageToVideo,
   createMotionControl,
+  createSceneReplace,
   extractList,
   listVideos,
   mergeVideo,
@@ -171,6 +172,84 @@ describe('createMotionControl', () => {
     await expect(
       createMotionControl(api, { referenceVideoKey: 'uploads/driver_video/d.mp4' }),
     ).rejects.toThrow(ValidationError);
+  });
+});
+
+describe.each([
+  ['kling', undefined],
+  ['wan', '720p'],
+  ['wan', '480p'],
+])('createMotionControl on engine %s', (engine, resolution) => {
+  it('sends engine and resolution', async () => {
+    const { api, post } = fakeApi();
+    await createMotionControl(api, {
+      characterReferenceImageId: '7',
+      referenceVideoKey: 'uploads/driver_video/d.mp4',
+      engine,
+      resolution,
+    });
+    expect(post).toHaveBeenCalledWith('/character-videos/motion-control', {
+      body: {
+        character_reference_image_id: '7',
+        reference_video_key: 'uploads/driver_video/d.mp4',
+        engine,
+        ...(resolution ? { resolution } : {}),
+      },
+    });
+  });
+});
+
+describe('createMotionControl engine validation', () => {
+  it('rejects an unknown engine', async () => {
+    const { api, post } = fakeApi();
+    await expect(
+      createMotionControl(api, { characterReferenceImageId: '7', referenceVideoKey: 'k', engine: 'sora' }),
+    ).rejects.toThrow(ValidationError);
+    expect(post).not.toHaveBeenCalled();
+  });
+
+  it('rejects --resolution without --engine wan', async () => {
+    const { api } = fakeApi();
+    await expect(
+      createMotionControl(api, { characterReferenceImageId: '7', referenceVideoKey: 'k', resolution: '720p' }),
+    ).rejects.toThrow(/only applies to --engine wan/);
+  });
+
+  it('rejects an unknown resolution', async () => {
+    const { api } = fakeApi();
+    await expect(
+      createMotionControl(api, { characterReferenceImageId: '7', referenceVideoKey: 'k', engine: 'wan', resolution: '1080p' }),
+    ).rejects.toThrow(ValidationError);
+  });
+});
+
+describe('createSceneReplace', () => {
+  it('posts the look, your video and the options to scene-replace', async () => {
+    const { api, post } = fakeApi();
+    await createSceneReplace(api, {
+      characterReferenceImageId: '9',
+      referenceVideoKey: 'uploads/driver_video/mine.mp4',
+      resolution: '720p',
+      keepOriginalSound: true,
+    });
+    expect(post).toHaveBeenCalledWith('/character-videos/scene-replace', {
+      body: {
+        character_reference_image_id: '9',
+        reference_video_key: 'uploads/driver_video/mine.mp4',
+        resolution: '720p',
+        keep_original_sound: true,
+      },
+    });
+  });
+
+  it('needs a look and a video, and checks the resolution', async () => {
+    const { api, post } = fakeApi();
+    await expect(createSceneReplace(api, { characterReferenceImageId: '', referenceVideoKey: 'k' })).rejects.toThrow(ValidationError);
+    await expect(createSceneReplace(api, { characterReferenceImageId: '9', referenceVideoKey: '' })).rejects.toThrow(ValidationError);
+    await expect(
+      createSceneReplace(api, { characterReferenceImageId: '9', referenceVideoKey: 'k', resolution: '4k' }),
+    ).rejects.toThrow(ValidationError);
+    expect(post).not.toHaveBeenCalled();
   });
 });
 

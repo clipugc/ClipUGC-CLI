@@ -18,6 +18,7 @@ Track B: public `clipugc` npm CLI against the ClipUGC `/api/v2` REST API (`/api/
 - [x] Commands: videos list/create/motion/merge/show/status/download/retry/delete (`--photo` auto-presign, driver ≤50MB + ffprobe ≤30s check, download to disk)
 - [x] Commands: **ads** list/show/download/retry/delete — finished UGC ads on the native `/merged-videos` endpoints. `videos merge` reports the new ad's `merged_video_id`; `--wait` polls the AD's own status; `videos list --finals` lists ads
 - [x] Commands: hooks suggest
+- [x] 1.4.0 (2026-10-03, website card #57): `videos motion --engine kling|wan [--resolution 480p|580p|720p]` (wan = Wan 2.2 Animate move, 2 credits/sec) and `videos replace --image <lookId> --driver <yourVideo>` (Wan 2.2 Animate replace, 3 credits/sec, AI label burned in server-side). MCP: `create_motion_clip` gains `engine`/`resolution`, new `create_scene_replace_clip` (12 tools). `credits` labels the new cost keys. `--wait` allows two hours on wan
 - [x] Uploads service (presign + PUT + spinner; purpose→extension validation)
 - [x] Skill packaging: `.claude/skills/clipugc/SKILL.md`, `.claude-plugin/{plugin.json,marketplace.json}`
 - [x] README.md (install, quickstart, command reference, config/exit codes, skill install)

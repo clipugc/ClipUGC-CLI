@@ -106,7 +106,7 @@ claude mcp add clipugc -- npx -y clipugc@latest mcp
 your machine, and a global install older than 1.2.0 has no `mcp` command, so
 Claude Code reports "Connection closed". If you still see that, update the old
 install with `npm i -g clipugc@latest`, or run `npx -y clipugc@latest mcp` once in
-a terminal so the download finishes (Ctrl+C after "11 tools ready"). Do not add
+a terminal so the download finishes (Ctrl+C after "12 tools ready"). Do not add
 it from inside a checkout of this repo: there npx resolves `clipugc` to the
 local project instead of the npm package.
 
@@ -146,8 +146,8 @@ common jobs). Resources: `clipugc://pipeline` (the order of calls) and `clipugc:
 (documented credit costs; `get_credits` has the live table).
 
 Tools: `list_characters`, `create_character`, `generate_image`, `list_images`,
-`create_clip`, `create_motion_clip`, `merge_ad`, `get_video`, `download_video`,
-`get_credits`, `list_hooks`. Arguments follow the CLI flags (`--per-page` becomes
+`create_clip`, `create_motion_clip`, `create_scene_replace_clip`, `merge_ad`, `get_video`,
+`download_video`, `get_credits`, `list_hooks`. Arguments follow the CLI flags (`--per-page` becomes
 `per_page`). Generation tools return the job id right away, like the CLI without
 `--wait`; poll with `get_video` (clips and finished videos) or `list_images` (looks) until the
 status is `completed`. Every tool reports its credit cost in its description, and
@@ -205,7 +205,9 @@ face stays the same person across an entire campaign or grid. That consistency i
 the point of the product.
 
 Full pricing: image 2 · clip 7 (5s) / 13 (10s) · motion control 3 per second of
-driver video (capped at 30s) · scene-staged clip 9 (5s) / 15 (10s) · **finished video free**.
+driver video, 2 on `--engine wan` (capped at 30s) · putting a character into your own
+video (`videos replace`) 3 per second (capped at 30s) · scene-staged clip 9 (5s) / 15 (10s)
+· **finished video free**.
 Charges are duration-aware and refunds return the exact amount charged. Check live
 values with `clipugc credits`.
 

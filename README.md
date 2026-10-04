@@ -205,7 +205,7 @@ face stays the same person across an entire campaign or grid. That consistency i
 the point of the product.
 
 Full pricing: image 2 · clip 7 (5s) / 13 (10s) · motion control 3 per second of
-driver video, 2 on `--engine wan` (capped at 30s) · putting a character into your own
+driver video, 2 on `--engine wan` (capped at 30s) · putting your AI influencer into your own
 video (`videos replace`) 3 per second (capped at 30s) · scene-staged clip 9 (5s) / 15 (10s)
 · **finished video free**.
 Charges are duration-aware and refunds return the exact amount charged. Check live

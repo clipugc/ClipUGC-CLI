@@ -1,6 +1,6 @@
 {
   "name": "clipugc",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "UGC videos for your app with AI influencers who keep the same face. Connects to the hosted ClipUGC server; sign in with your ClipUGC account on first use.",
   "mcpServers": {
     "clipugc": {

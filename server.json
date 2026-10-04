@@ -8,13 +8,13 @@
     "url": "https://github.com/clipugc/ClipUGC-CLI",
     "source": "github"
   },
-  "version": "1.4.0",
+  "version": "1.4.1",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "clipugc",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"

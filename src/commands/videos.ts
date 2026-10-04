@@ -245,9 +245,9 @@ export function registerVideosCommands(program: Command): void {
   videos
     .command('replace')
     .description(
-      'Put your AI influencer into a video you filmed or hold the rights to: the character takes the place of the person in it, in that video\'s own room and light. Costs 3 credits per second of your video (rounded up, capped at 30s). Clips carry an "AI generated" label',
+      'Put your AI influencer into a video you filmed or hold the rights to: your AI influencer takes the place of the person in it, in that video\'s own room and light. Costs 3 credits per second of your video (rounded up, capped at 30s). Clips carry an "AI generated" label',
     )
-    .requiredOption('--image <lookId>', 'ID of a look of a character designed in ClipUGC (your own photos cannot be used)')
+    .requiredOption('--image <lookId>', 'ID of a look of an AI influencer designed in ClipUGC (your own photos cannot be used)')
     .requiredOption('--driver <videoFile>', 'Your video (mp4/mov, max 50 MB and 30s), uploaded first')
     .option('--resolution <res>', '480p, 580p or 720p (default 720p, same price at each)')
     .option('--keep-sound', "Keep your video's original sound")

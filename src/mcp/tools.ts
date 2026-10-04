@@ -337,16 +337,16 @@ export const TOOLS: readonly ToolDefinition[] = [
 
   define({
     name: 'create_scene_replace_clip',
-    title: 'Put a character into your own video',
+    title: 'Put your AI influencer into your own video',
     description:
-      'Put an AI influencer into a video the user filmed or holds the rights to: the character takes the place of the person ' +
+      'Put an AI influencer into a video the user filmed or holds the rights to: the AI influencer takes the place of the person ' +
       'in it, in that video\'s own room, light and camera, and the clip carries a visible "AI generated" label. Same as ' +
-      '`clipugc videos replace`. Needs a look of a character designed in ClipUGC (not the user\'s own photo) and a local video ' +
+      '`clipugc videos replace`. Needs a look of an AI influencer designed in ClipUGC (not the user\'s own photo) and a local video ' +
       'file, mp4/mov, at most 50 MB and 30 seconds; it is uploaded first. Costs 3 credits per second of the video, rounded up, ' +
       'capped at 30 seconds (confirm with get_credits). Rendering takes several minutes. Returns the clip id and status. ' +
       POLL_CLIP,
     inputSchema: {
-      image: z.string().min(1).describe('Id of a generated character look (same as --image).'),
+      image: z.string().min(1).describe('Id of a look of an AI influencer designed in ClipUGC (same as --image).'),
       driver: z.string().min(1).describe('Local path of the user\'s own video, mp4/mov, max 50 MB and 30s (same as --driver).'),
       resolution: z.enum(videos.WAN_RESOLUTIONS).optional().describe('480p, 580p or 720p, default 720p (same as --resolution).'),
       keep_sound: z.boolean().optional().describe('Keep the video\'s original sound (same as --keep-sound).'),

@@ -1,7 +1,7 @@
 {
   "identifier": "clipugc",
   "name": "ClipUGC",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Generate AI UGC videos for your app from Claude Code, Cursor or any MCP client: create an AI influencer, make her photo, turn it into a talking 5 or 10 second video, add your app screen recording and a hook line, download the file. Needs a ClipUGC API key.",
   "author": "ClipUGC",
   "authorUrl": "https://clipugc.com",
@@ -327,8 +327,8 @@
     },
     {
       "name": "create_scene_replace_clip",
-      "title": "Put a character into your own video",
-      "description": "Put an AI influencer into a video the user filmed or holds the rights to: the character takes the place of the person in it, in that video's own room, light and camera, and the clip carries a visible \"AI generated\" label. Same as `clipugc videos replace`. Needs a look of a character designed in ClipUGC (not the user's own photo) and a local video file, mp4/mov, at most 50 MB and 30 seconds; it is uploaded first. Costs 3 credits per second of the video, rounded up, capped at 30 seconds (confirm with get_credits). Rendering takes several minutes. Returns the clip id and status. Generation runs in the background. Poll get_video with {\"id\": <clip id>, \"kind\": \"clip\"} every 5 to 10 seconds until status is \"completed\" or \"failed\", then call download_video.",
+      "title": "Put your AI influencer into your own video",
+      "description": "Put an AI influencer into a video the user filmed or holds the rights to: the AI influencer takes the place of the person in it, in that video's own room, light and camera, and the clip carries a visible \"AI generated\" label. Same as `clipugc videos replace`. Needs a look of an AI influencer designed in ClipUGC (not the user's own photo) and a local video file, mp4/mov, at most 50 MB and 30 seconds; it is uploaded first. Costs 3 credits per second of the video, rounded up, capped at 30 seconds (confirm with get_credits). Rendering takes several minutes. Returns the clip id and status. Generation runs in the background. Poll get_video with {\"id\": <clip id>, \"kind\": \"clip\"} every 5 to 10 seconds until status is \"completed\" or \"failed\", then call download_video.",
       "inputSchema": {
         "type": "object",
         "properties": {

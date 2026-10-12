@@ -1,9 +1,22 @@
 # ClipUGC CLI
 
-Official command-line interface for **[ClipUGC](https://clipugc.com/?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories)**, create AI
-influencers, generate photorealistic looks of the same person, turn them into
-silent-reaction clips, and put your app's screen recording into a ready-to-post
-UGC video. All from the terminal; nothing renders locally.
+**[ClipUGC](https://clipugc.com/?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories) makes UGC videos for mobile apps with an AI
+influencer who keeps the same face in every video, with your app's screen recording
+inside the finished 9:16 video.** This repo is its official CLI, local MCP server and
+Claude Code plugin. Create AI influencers, generate photorealistic looks of the same
+person, turn them into silent-reaction clips, and put your app recording into a
+ready-to-post UGC video. Nothing renders locally.
+
+Three ways in:
+
+| You work in | Connect with | Plan |
+|---|---|---|
+| Claude.ai, ChatGPT, Claude Code, Cursor, VS Code, Gemini CLI | The hosted MCP server, `https://clipugc.com/mcp`. Sign in, no API key. [Setup](#hosted-mcp-server-claudeai-chatgpt-claude-code-cursor-vs-code-gemini-cli) | **Free plan works** |
+| A terminal or your own scripts | `npm install -g clipugc` and an API key | Professional or Business |
+| Claude Code skills | `/plugin marketplace add clipugc/ClipUGC-CLI` ([below](#use-it-with-claude-code)) | Same as the CLI |
+
+The hosted server is also the quickest free start: give it an App Store or Google Play
+link and its `first_videos` tool makes three finished videos at no cost.
 
 ```bash
 npm install -g clipugc
@@ -12,7 +25,8 @@ clipugc auth login
 
 Requires **Node.js >= 20**. Create an API key in the
 [ClipUGC dashboard](https://clipugc.com/dashboard?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories) (API keys section).
-API keys are available on paid plans (Professional and Business).
+API keys are available on paid plans (Professional and Business). The hosted MCP
+server needs no key.
 
 ## Use it with Claude Code
 
@@ -41,11 +55,26 @@ See **[docs/skills.md](docs/skills.md)** for what each skill knows.
 
 Prefer flags? Everything below works standalone, the skills just drive the same CLI.
 
-## Install in Gemini CLI, Cursor or VS Code
+## Hosted MCP server: Claude.ai, ChatGPT, Claude Code, Cursor, VS Code, Gemini CLI
 
-These use the hosted ClipUGC server at `https://clipugc.com/mcp`. Nothing runs on
-your machine and there is no API key to copy: the first call opens a browser so
-you can sign in with your ClipUGC account.
+These use the hosted ClipUGC server at `https://clipugc.com/mcp` (39 tools, OAuth 2.1
+sign-in, works on every plan including free). Nothing runs on your machine and there
+is no API key to copy: the first call opens a browser so you can sign in with your
+ClipUGC account.
+
+**Claude Code**
+
+```bash
+claude mcp add --transport http clipugc https://clipugc.com/mcp
+```
+
+**Claude.ai**: Settings > Connectors > Add custom connector. Name it ClipUGC, paste
+`https://clipugc.com/mcp`, and sign in when Claude asks.
+
+**ChatGPT**: Settings > Apps (Connectors on older versions) > Advanced > turn on
+Developer mode > Create. Name ClipUGC, the same URL, authentication OAuth. Developer
+mode is on Plus and Pro and not yet offered in the EEA, Switzerland or the UK.
+[Step-by-step guide](https://clipugc.com/guide/chatgpt?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories).
 
 **Gemini CLI**
 
@@ -79,13 +108,14 @@ code --add-mcp '{"name":"clipugc","type":"http","url":"https://clipugc.com/mcp"}
 
 Or search `@mcp clipugc` in the Extensions view once it shows up in the gallery.
 
-## Use from Claude Code / Cursor
+## Local MCP server (API key): Claude Code, Cursor, Claude Desktop
 
 [![smithery badge](https://smithery.ai/badge/clipugc/clipugc)](https://smithery.ai/servers/clipugc/clipugc)
 Listed on the [MCP Registry](https://registry.modelcontextprotocol.io/?search=clipugc) and [Smithery](https://smithery.ai/servers/clipugc/clipugc).
 
-The CLI is also an MCP server. `clipugc mcp` speaks the Model Context Protocol over
-stdio, so any MCP client can create characters, looks, clips and finished videos as tools,
+The CLI is also a local MCP server with 12 tools, for when you would rather run it on
+your machine with an API key than sign in to the hosted one. `clipugc mcp` speaks the
+Model Context Protocol over stdio, so any MCP client can create characters, looks, clips and finished videos as tools,
 without shelling out to the commands above.
 
 Log in once so the server has a key (it reads the same `~/.config/clipugc/config.json`
@@ -156,8 +186,8 @@ status is `completed`. Every tool reports its credit cost in its description, an
 ## What it produces
 
 One character, cast once. Every picture below is the **same person**, only the
-setting, outfit and lighting change, because each look is generated from her base
-image rather than from the description again:
+setting, outfit and lighting change, because each look is generated from the
+character's base image rather than from the description again:
 
 ![Six looks of the same AI influencer, golden-hour bedroom, bathroom mirror, parked car, night bathroom, balcony at night, in bed](docs/images/looks.jpg)
 
@@ -175,7 +205,7 @@ Then any look becomes a **silent reaction clip**. Mouth closed throughout, lip-s
 from a still image is the giveaway that a video is AI, so the format is a held
 expression plus a text hook, not talking:
 
-<img src="docs/images/reaction.gif" alt="A silent reaction clip, she glances down at her phone, back up to the lens, and a suppressed smirk forms, mouth closed throughout" width="230">
+<img src="docs/images/reaction.gif" alt="A silent reaction clip, the AI influencer glances down at the phone, back up to the lens, and a suppressed smirk forms, mouth closed throughout" width="230">
 
 ```bash
 clipugc videos create --image <lookId> --duration 5 --wait \
@@ -214,8 +244,8 @@ values with `clipugc credits`.
 ## Quickstart (plain CLI)
 
 ```bash
-# 1. Cast her. Be specific, this is what decides whether she looks like a real
-#    creator or like generic AI. (See the casting guide for the formula.)
+# 1. Cast the AI influencer. Be specific, this is what decides whether it looks
+#    like a real creator or like generic AI. (See the casting guide for the formula.)
 clipugc characters create --wait \
   --description "Very pretty Danish woman aged 22, light blonde fine hair to her shoulders with a middle parting, pale blue upturned eyes, heart-shaped face, porcelain cool-toned skin. Genuinely attractive Instagram-creator look, but reads as a real girl, natural skin texture with visible pores, not airbrushed." \
   --scene "close selfie in a softly lit bedroom at golden hour, warm rim light on her hair, full glam makeup with winged liner and glossy lips, natural skin texture, amateur front-camera phone quality, headroom above her head for text"
@@ -241,7 +271,7 @@ The prompt is the product. Below is one of each kind; the full libraries are in
 [`ugc-director`](docs/skills.md) skill (~30 reactions across 9 emotion families).
 
 **Casting**: concrete features → an explicit attractiveness claim → directed makeup
-and lighting → a realism anchor. All four parts, or she comes out looking like AI:
+and lighting → a realism anchor. All four parts, or the result looks like AI:
 
 <details>
 <summary><b>Blonde Scandinavian</b>: the fastest way to see what this tool does</summary>
@@ -328,6 +358,22 @@ why did nobody tell me
 I stopped paying for 4 apps
 POV: you finally organised your week
 ```
+
+## How it compares
+
+ClipUGC is one of several ways to make UGC-style videos from an AI agent. Two dated
+comparisons, written by us and with a "skip it if" for each tool, ClipUGC included:
+
+- [Best MCP servers for AI UGC videos](https://clipugc.com/best/ai-ugc-mcp-servers?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories):
+  ClipUGC, agent-media, VidGuy, UnrealUGC, UGC Copilot and EzUGC on hosting, sign-in,
+  tool count, free use and price.
+- [Best AI UGC video generators for mobile apps](https://clipugc.com/best/ai-ugc-video-generators-for-mobile-apps?utm_source=github-readme&utm_medium=integration&utm_campaign=agent-directories):
+  eight tools, including ReelFarm, Fastlane, UGCdrop, MakeUGC, Creatify and Arcads.
+
+In short: pick ClipUGC when you want one AI influencer with the same face across every
+video and your app on screen, made from a terminal or a chat, from $14.99 a month with
+a free plan to start. It does not post for you and has no product-page-to-video flow
+for online shops.
 
 ## Documentation
 

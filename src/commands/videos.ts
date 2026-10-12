@@ -275,7 +275,7 @@ export function registerVideosCommands(program: Command): void {
     .description(
       'Put your app screen recording and a hook text overlay (and optional background music) into the character clip to make the finished UGC video. Free',
     )
-    .requiredOption('--app-video <file>', 'App screen recording (mp4/mov), uploaded first')
+    .requiredOption('--app-video <file>', 'App screen recording (mp4, mov, m4v, 3gp or webm, max 100 MB), uploaded first')
     .requiredOption('--hook <text>', 'Hook text overlay (max 150 chars)')
     .option('--music <file>', 'Background music (mp3/wav/m4a), uploaded first')
     .option('--wait', 'Wait until the finished video is ready')

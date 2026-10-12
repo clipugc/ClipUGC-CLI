@@ -14,7 +14,8 @@ export type UploadPurpose = 'driver_video' | 'app_video' | 'music' | 'photo';
 /** Allowed file extensions (lowercase, no dot) per upload purpose. */
 export const ALLOWED_EXTENSIONS: Record<UploadPurpose, readonly string[]> = {
   driver_video: ['mp4', 'mov'],
-  app_video: ['mp4', 'mov'],
+  // Same list as the website's App\Rules\AppRecording::EXTENSIONS (the presign endpoint enforces it).
+  app_video: ['mp4', 'mov', 'qt', 'm4v', '3gp', '3g2', 'webm'],
   music: ['mp3', 'wav', 'm4a'],
   photo: ['png', 'jpg', 'jpeg', 'webp'],
 };

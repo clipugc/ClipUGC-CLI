@@ -42,6 +42,6 @@ caches plugins by version, so a fix shipped without a bump reaches nobody.
 
 ## Skills
 
-`clipugc` (drive the product), `ugc-director` (UGC ad creative direction: hooks,
+`clipugc` (drive the product), `ugc-director` (UGC video creative direction: hooks,
 archetypes, casting, prompt craft), `persona-account` (ongoing AI creator
 accounts), `story-runner` (continuing story series episodes).

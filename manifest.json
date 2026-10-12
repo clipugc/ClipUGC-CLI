@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "clipugc",
   "display_name": "ClipUGC",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Create AI influencer characters, looks, video clips and finished UGC videos for your app with ClipUGC.",
   "long_description": "ClipUGC makes UGC videos for mobile apps with AI influencers. This extension gives Claude Desktop the same tools as the `clipugc` command line: create an AI character, generate more looks of the same face, animate a look into a short silent-reaction clip, add your app screen recording and a hook text, and download the finished video.\n\nYou need a ClipUGC account on a paid plan and an API key from https://clipugc.com/dashboard (API Keys). Generation spends credits from your ClipUGC balance; the `get_credits` tool shows the balance and the live cost of each action.",
   "author": {
@@ -72,7 +72,7 @@
     },
     {
       "name": "merge_ad",
-      "description": "Put your app screen recording and a hook text into a finished clip to make the UGC video for your app. Free at the moment; get_credits shows the live cost."
+      "description": "Put your app screen recording and a hook text into a completed clip to make the finished UGC video for your app. Free at the moment; get_credits shows the live cost."
     },
     {
       "name": "get_video",
@@ -128,11 +128,11 @@
     },
     {
       "name": "new_ai_influencer",
-      "description": "Creates a private ClipUGC character from a plain description and waits for her first photo.",
+      "description": "Creates a private ClipUGC AI influencer from a plain description and waits for its first photo.",
       "arguments": [
         "description"
       ],
-      "text": "Create a private ClipUGC character described as: ${arguments.description}. Use create_character, poll list_images until a photo is completed, show the ids."
+      "text": "Create a private ClipUGC AI influencer described as: ${arguments.description}. Use create_character, poll list_images until a photo is completed, show the ids."
     },
     {
       "name": "hook_ideas",

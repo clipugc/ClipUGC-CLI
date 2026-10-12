@@ -1,16 +1,21 @@
+import { readFileSync } from 'node:fs';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import type { Command } from 'commander';
 
 /**
- * Brand rule: what ClipUGC makes is a "UGC video" / "finished video", never an "ad", and
- * outward text never uses an em dash. This walks everything an MCP client shows a model or a
- * user (server instructions, tool titles/descriptions/argument descriptions, prompts and
- * resources) and fails on either.
+ * Brand rule: what ClipUGC makes is a "UGC video" / "finished video", never an "ad"; the
+ * step that adds the app recording is never called a "merge" in prose; and outward text never
+ * uses an em dash. This walks everything an MCP client shows a model or a user (server
+ * instructions, tool titles/descriptions/argument descriptions, prompts and resources) plus
+ * the directory listings (manifest.json, server.json, lhm.plugin.json, the Gemini and Cursor
+ * manifests) and fails on any of them.
  *
- * Tool NAMES are identifiers and stay as shipped (renaming breaks installs), so `merge_ad`
- * is stripped before matching.
+ * Identifiers stay as shipped (renaming breaks installs and API callers): tool names such as
+ * `merge_ad` are stripped before matching, snake_case wire fields (merged_video_id,
+ * merge_status) never match the word-bounded patterns, and anything in `backticks` (CLI
+ * commands like `clipugc videos merge`, the `merge` credit key) counts as code, not prose.
  */
 vi.mock('../src/services/api.js', () => ({ createApiClient: vi.fn() }));
 
@@ -20,10 +25,11 @@ import { TOOL_NAMES } from '../src/mcp/tools.js';
 import { createCli } from '../src/cli.js';
 
 const AD_WORD = /\bads?\b/i;
+const MERGE_WORD = /\bmerg(e|es|ed|ing)\b/i;
 const EM_DASH = '—';
 
 function stripIdentifiers(text: string): string {
-  let out = text;
+  let out = text.replace(/`[^`]*`/g, '<code>');
   for (const name of TOOL_NAMES) out = out.split(name).join('<tool>');
   return out;
 }
@@ -45,7 +51,10 @@ function collectStrings(value: unknown, path: string, out: Array<{ path: string;
 
 function offenders(entries: Array<{ path: string; text: string }>): string[] {
   return entries
-    .filter(({ text }) => AD_WORD.test(stripIdentifiers(text)) || text.includes(EM_DASH))
+    .filter(({ text }) => {
+      const prose = stripIdentifiers(text);
+      return AD_WORD.test(prose) || MERGE_WORD.test(prose) || text.includes(EM_DASH);
+    })
     .map(({ path, text }) => `${path}: ${text}`);
 }
 
@@ -63,7 +72,7 @@ beforeEach(() => {
 });
 
 describe('MCP outward wording', () => {
-  it('server instructions never say "ad" and never use an em dash', async () => {
+  it('server instructions never say "ad" or "merge" and never use an em dash', async () => {
     const client = await connectedClient();
     const instructions = client.getInstructions() ?? '';
     expect(instructions.length).toBeGreaterThan(0);
@@ -105,6 +114,27 @@ describe('MCP outward wording', () => {
     expect(entries.length).toBeGreaterThan(0);
     expect(offenders(entries)).toEqual([]);
     await client.close();
+  });
+});
+
+describe('directory listings and extension manifests', () => {
+  const root = new URL('../', import.meta.url);
+  const LISTINGS = ['manifest.json', 'server.json', 'lhm.plugin.json', 'gemini-extension.json', '.cursor-plugin/plugin.json'];
+
+  it.each(LISTINGS)('%s has no "ad", no "merge" and no em dash in its prose', (file) => {
+    const json = JSON.parse(readFileSync(new URL(file, root), 'utf8')) as unknown;
+    const entries: Array<{ path: string; text: string }> = [];
+    collectStrings(json, file, entries);
+    // Every listing carries at least a description; an empty walk would pass vacuously.
+    expect(entries.length).toBeGreaterThan(0);
+    expect(offenders(entries)).toEqual([]);
+  });
+
+  it('the matcher still catches the copy this rule was written for', () => {
+    expect(offenders([{ path: 'x', text: 'ClipUGC makes AI influencer style UGC ads for mobile apps' }])).toHaveLength(1);
+    expect(offenders([{ path: 'x', text: 'merge the app screen recording into the clip' }])).toHaveLength(1);
+    expect(offenders([{ path: 'x', text: 'one line — another' }])).toHaveLength(1);
+    expect(offenders([{ path: 'x', text: 'merge_ad returns merged_video_id; same as `clipugc videos merge <id>`' }])).toEqual([]);
   });
 });
 

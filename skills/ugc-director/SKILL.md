@@ -26,7 +26,7 @@ Command syntax, credit costs, prerequisites, and troubleshooting live in the `cl
 Extract from the user (ask only for what's missing):
 - What does the app do, and the ONE moment worth showing (the killer feature)?
 - App category (fitness, finance, habit, dating, photo/AI, learning, wellness, games)?
-- Do they have a screen recording? (Required for the finished video; 9:16, mp4/mov, ≤100MB. If not, tell them to record the killer feature only, 6–12s.)
+- Do they have a screen recording? (Required for `videos merge`; 9:16, mp4, mov, m4v, 3gp or webm, ≤100MB. If not, tell them to record the killer feature only, 6–12s.)
 
 ### Step 2: Creative plan (present BEFORE spending credits)
 Using the references, propose a one-page plan:

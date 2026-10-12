@@ -371,12 +371,12 @@ export const TOOLS: readonly ToolDefinition[] = [
     description:
       'Put an app screen recording and a hook text overlay (plus optional background music) into a completed clip to make the ' +
       'finished UGC video for the app. Same as `clipugc videos merge <clipId>`. The clip must have status "completed" (check ' +
-      'with get_video). This step is free at the time of writing; the live cost is the "merge" entry of get_credits. Files are ' +
+      'with get_video). This step is free at the time of writing; the live cost is the `merge` key of get_credits. Files are ' +
       'uploaded first. Returns merged_video_id: the finished video id, which is a different id space from the clip id. ' +
       POLL_FINISHED,
     inputSchema: {
       video: idField('Clip (character video)'),
-      app_video: z.string().min(1).describe('Local path of the app screen recording, mp4/mov (same as --app-video).'),
+      app_video: z.string().min(1).describe('Local path of the app screen recording: mp4, mov, m4v, 3gp or webm, max 100 MB (same as --app-video).'),
       hook: z.string().min(1).max(videos.MAX_HOOK_TEXT_LENGTH).describe('Hook text overlaid on the video, max 150 chars (same as --hook).'),
       music: z.string().optional().describe('Local path of background music, mp3/wav/m4a (same as --music).'),
     },
@@ -469,8 +469,8 @@ export const TOOLS: readonly ToolDefinition[] = [
     name: 'get_credits',
     title: 'Get credit balance and costs',
     description:
-      'Return the authenticated user\'s credit balance and the live per-action credit costs (image, clip, clip_10s, scene_staged, ' +
-      'motion_per_second, motion_wan_per_second, scene_replace_per_second, merge). Same as `clipugc credits`. Call it before any generation tool so you can tell the user the ' +
+      'Return the authenticated user\'s credit balance and the live per-action credit costs (keys `image`, `clip`, `clip_10s`, `scene_staged`, ' +
+      '`motion_per_second`, `motion_wan_per_second`, `scene_replace_per_second`, `merge`). Same as `clipugc credits`. Call it before any generation tool so you can tell the user the ' +
       'cost and stop early when the balance is too low. Costs no credits.',
     inputSchema: {},
     annotations: { readOnlyHint: true, openWorldHint: true },

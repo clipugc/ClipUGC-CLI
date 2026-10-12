@@ -20,7 +20,7 @@ export const PIPELINE_GUIDE = `ClipUGC pipeline for one UGC video
    create_character with a plain description for a new private one (its first photo is
    generated automatically; poll list_images until a photo is completed).
 3. Optional: generate_image for another look of the same face (a place, an outfit).
-4. create_clip with the completed image id, a prompt for what she says or does, and
+4. create_clip with the completed image id, a prompt for what the AI influencer says or does, and
    duration 5 or 10. Poll get_video with the returned id until status is completed.
 5. Optional: merge_ad with the clip id, the path to the app screen recording and a hook
    line (list_hooks suggests some) to make the finished video. Poll get_video with kind
@@ -38,7 +38,7 @@ clip, 10 seconds: 13
 clip with a scene (character staged in a place first): 9 for 5 seconds, 15 for 10 seconds
 motion clip: 3 per second of the driver video on kling, 2 on wan, capped at 30 seconds
 AI influencer put into your own video (create_scene_replace_clip): 3 per second of the video, capped at 30 seconds
-finished video (app recording plus hook on a clip, the "merge" entry): free
+finished video (app recording plus hook on a clip, the \`merge\` key): free
 listing, status, download and hook suggestions: free
 
 Plans: Professional is 150 credits a month for $14.99, about 11 ten-second videos.
@@ -54,7 +54,7 @@ export function registerExtras(server: McpServer): void {
         'Walks the model through the whole ClipUGC pipeline for one video: pick or create the influencer, make the clip, add the app recording, download.',
       argsSchema: {
         app: z.string().describe('What the app does, in one or two sentences.'),
-        message: z.string().optional().describe('What she should say or do in the clip. Leave empty to let the model write it.'),
+        message: z.string().optional().describe('What the AI influencer should say or do in the clip. Leave empty to let the model write it.'),
         recording: z.string().optional().describe('Local path to the app screen recording to add, if any.'),
       },
     },
@@ -66,7 +66,7 @@ export function registerExtras(server: McpServer): void {
             type: 'text',
             text:
               `Make one UGC video for this app: ${app}\n` +
-              (message ? `She should say or do: ${message}\n` : 'Write a short, natural line for her to say about the app.\n') +
+              (message ? `The AI influencer should say or do: ${message}\n` : 'Write a short, natural line for the AI influencer to say about the app.\n') +
               (recording ? `Add this app recording with merge_ad: ${recording}\n` : 'No app recording; stop after the clip.\n') +
               `\nFollow this order and tell me each id as you get it:\n${PIPELINE_GUIDE}`,
           },
@@ -79,9 +79,9 @@ export function registerExtras(server: McpServer): void {
     'new_ai_influencer',
     {
       title: 'Create a new AI influencer',
-      description: 'Creates a private ClipUGC character from a plain description and waits for her first photo.',
+      description: 'Creates a private ClipUGC AI influencer from a plain description and waits for its first photo.',
       argsSchema: {
-        description: z.string().describe('Who she is: age range, style, setting, mood. Plain words.'),
+        description: z.string().describe('Who the AI influencer is: age range, style, setting, mood. Plain words.'),
       },
     },
     ({ description }) => ({

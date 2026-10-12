@@ -40,6 +40,14 @@ describe('validateExtension', () => {
     expect(validateExtension('music', 'track.m4a')).toBe('m4a');
   });
 
+  it('takes the app recording containers the website accepts, but keeps driver videos at mp4/mov', () => {
+    for (const ext of ['mp4', 'mov', 'qt', 'm4v', '3gp', '3g2', 'webm']) {
+      expect(validateExtension('app_video', `screen.${ext.toUpperCase()}`)).toBe(ext);
+    }
+    expect(() => validateExtension('app_video', 'screen.avi')).toThrow(ValidationError);
+    expect(() => validateExtension('driver_video', 'clip.webm')).toThrow(ValidationError);
+  });
+
   it('rejects disallowed extensions with ValidationError', () => {
     expect(() => validateExtension('photo', 'doc.gif')).toThrow(ValidationError);
     expect(() => validateExtension('driver_video', 'clip.avi')).toThrow(ValidationError);

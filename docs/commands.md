@@ -114,7 +114,7 @@ old name of this command group and still works.
 | `--keep-sound` | Keep the generated audio. |
 | `--wait` | Poll until completed or failed. |
 
-File uploads are handled automatically via presigned URLs. Accepted formats by purpose: photo `png/jpg/jpeg/webp`; app video and driver video `mp4/mov`; music `mp3/wav/m4a`.
+File uploads are handled automatically via presigned URLs. Accepted formats by purpose: photo `png/jpg/jpeg/webp`; app screen recording `mp4/mov/m4v/3gp/webm` (max 100 MB); driver video `mp4/mov`; music `mp3/wav/m4a`.
 
 ## Hooks
 

@@ -79,7 +79,7 @@ So choose by intent, not by identity risk:
 
 If the intent is unclear, ask the user what they want to do and show the available commands.
 
-Constraints to enforce before running: `--scene` max 600 chars; `--prompt` max 1500 chars; `--hook` max 150 chars; driver video mp4/mov max 50MB and max 30s; `--per-page` max 50. File formats, photo: png/jpg/jpeg/webp; app video + driver video: mp4/mov; music: mp3/wav/m4a. Uploads are auto-presigned; just pass local file paths.
+Constraints to enforce before running: `--scene` max 600 chars; `--prompt` max 1500 chars; `--hook` max 150 chars; driver video mp4/mov max 50MB and max 30s; `--per-page` max 50. File formats, photo: png/jpg/jpeg/webp; app screen recording (`--app-video`): mp4, mov, m4v, 3gp or webm, max 100MB; driver video: mp4/mov; music: mp3/wav/m4a. Uploads are auto-presigned; just pass local file paths.
 
 ## Prerequisites Check
 
